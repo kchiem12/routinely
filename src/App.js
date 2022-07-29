@@ -1,8 +1,11 @@
 import './App.css';
+import SignIn from './pages/SignIn';
+import { ThemeProvider } from '@mui/material';
+import theme from './configuration/theme.config'
 
 function App() {
   return (
-    <h1>WHAT'S POPPIN</h1>
+      <SignIn />
   );
 }
 
