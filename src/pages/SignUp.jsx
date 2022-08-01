@@ -15,16 +15,9 @@ import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withrouter';
 
-function SignIn() {
+import {withFirebase} from '../components/Firebase';
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+const SignUp = (props) => {
 
 
   const handleChange = e => {
@@ -45,6 +38,20 @@ function SignIn() {
   //Set state of the user
   const [user, setUser] = React.useState(defaultUser);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+
+    //handles authentication, making sure that email and password is valid
+    props.firebase.auth.createUserWithEmailAndPassword(user.email, user.password).then(authUser => {
+        //wipes the user in file
+        setUser(defaultUser);
+        props.history.push("/dashboard");
+    }).catch(err => {
+        setUser({...user, error: err.message});
+    });
+  };
+
   const isValid = user.email === '' || user.password ==='';
 
   return (
@@ -62,7 +69,7 @@ function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -94,7 +101,7 @@ function SignIn() {
               sx={{ mt: 3, mb: 2 }}
               disabled={isValid}
             >
-              Sign In
+              Sign Up
             </Button>
             <Grid container>
               <Grid item xs>
@@ -103,8 +110,8 @@ function SignIn() {
                 </Link> */}
               </Grid>
               <Grid item>
-                <Link to="/sign-up">
-                  {"Don't have an account? Sign Up"}
+                <Link to="/">
+                  {"Have an account? Sign In!"}
                 </Link>
               </Grid>
             </Grid>
@@ -115,4 +122,4 @@ function SignIn() {
   );
 }
 
-export default withRouter(SignIn);
+export default withRouter(withFirebase(SignUp));
