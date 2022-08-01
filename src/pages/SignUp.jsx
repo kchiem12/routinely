@@ -15,7 +15,7 @@ import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withrouter';
 
-import {withFirebase} from '../components/Firebase';
+import {auth, db} from '../Firebase';
 
 const SignUp = (props) => {
 
@@ -31,7 +31,8 @@ const SignUp = (props) => {
     email: '',
     password: '',
     error: null,
-    auth: null
+    auth: null,
+    last_login: null
   };
 
 
@@ -43,10 +44,26 @@ const SignUp = (props) => {
 
 
     //handles authentication, making sure that email and password is valid
-    props.firebase.auth.createUserWithEmailAndPassword(user.email, user.password).then(authUser => {
+    auth.createUserWithEmailAndPassword(user.email, user.password).then(authUser => {
+        
+        //declares the current user
+        var theUser = auth.currentUser;
+
+        //add to database
+        var database_ref = db.ref();
+        
+        var userData = {
+            email: user.email,
+            last_login: Date.now()
+        }
+
+        database_ref.child('users/' + theUser.uid).set(userData);
+
         //wipes the user in file
         setUser(defaultUser);
-        props.history.push("/dashboard");
+
+        alert('New account created!');
+        // props.history.push("/dashboard");
     }).catch(err => {
         setUser({...user, error: err.message});
     });
@@ -94,6 +111,10 @@ const SignUp = (props) => {
               autoComplete="current-password"
               onChange={handleChange}
             />
+
+            <Typography className='err-signup'>
+                {user.error ? user.error : ''}
+            </Typography>
             <Button
               type="submit"
               fullWidth
@@ -122,4 +143,4 @@ const SignUp = (props) => {
   );
 }
 
-export default withRouter(withFirebase(SignUp));
+export default withRouter(SignUp);

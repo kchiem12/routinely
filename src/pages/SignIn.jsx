@@ -14,17 +14,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withrouter';
+import PasswordForget from '../components/PasswordForget';
+
+import { auth, db } from '../Firebase';
 
 function SignIn() {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
 
 
   const handleChange = e => {
@@ -46,6 +41,37 @@ function SignIn() {
   const [user, setUser] = React.useState(defaultUser);
 
   const isValid = user.email === '' || user.password ==='';
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    //Authenticates login
+    auth.signInWithEmailAndPassword(user.email, user.password).then(() => {
+
+            //declares the current user
+            var theUser = auth.currentUser;
+
+            //add to database
+            var database_ref = db.ref();
+            
+            var userData = {
+                last_login: Date.now()
+            };
+    
+            database_ref.child('users/' + theUser.uid).update(userData);
+    
+            //wipes the user in file
+            setUser(defaultUser);
+    
+            alert('login was successful!');
+
+    }).catch(err => {
+      setUser({...user, error: err.message});
+      console.log(user.email);
+      console.log(user.password);
+    });
+  };
+
 
   return (
       <Container component="main" maxWidth="xs">
@@ -87,6 +113,9 @@ function SignIn() {
               autoComplete="current-password"
               onChange={handleChange}
             />
+              <Typography className='error'>
+                {user.error ? user.error : ''}
+            </Typography>
             <Button
               type="submit"
               fullWidth
@@ -98,9 +127,8 @@ function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                {/* <Link href="#" variant="body2">
-                  Forgot password?
-                </Link> */}
+                <PasswordForget>
+                </PasswordForget>
               </Grid>
               <Grid item>
                 <Link to="/sign-up">
