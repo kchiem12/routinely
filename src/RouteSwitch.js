@@ -3,6 +3,7 @@ import App from "./App";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from './configuration/theme.config';
 import SignUp from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard"
 
 const RouteSwitch = () => {
     return ( 
@@ -11,6 +12,7 @@ const RouteSwitch = () => {
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/dashboard" element={<Dashboard />}></Route>
             </Routes>
             </ThemeProvider>
         </BrowserRouter>
