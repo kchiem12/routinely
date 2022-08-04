@@ -13,13 +13,16 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
-import withRouter from '../components/withrouter';
+import withRouter from '../components/withRouter';
 import PasswordForget from '../components/PasswordForget';
+// import { useNavigate } from 'react-router-dom';
 
 import { auth, db } from '../Firebase';
 
-function SignIn() {
+function SignIn(props) {
 
+  //Uses history to programatically change routes
+  const { location, navigate, params} = props.router;
 
 
   const handleChange = e => {
@@ -62,8 +65,9 @@ function SignIn() {
     
             //wipes the user in file
             setUser(defaultUser);
-    
-            alert('login was successful!');
+            //Switches page to dashboard
+            navigate('/dashboard');
+            
 
     }).catch(err => {
       setUser({...user, error: err.message});

@@ -1,24 +1,29 @@
 import React from "react";
-import withRouter from "../components/withrouter";
-import Sidebar from "../components/Sidebar/sidebar";
+import withRouter from "../components/withRouter.js";
+import Sidebar from "../components/Sidebar/Sidebar";
 import Topbar from "../components/Topbar/Topbar";
+import Overview from "./Overview";
 import './dashboard.css';
+import {AuthorizedUserCont, withAuthentication} from "../components/Session";
+import { auth } from "../Firebase.js";
 
-const sidebarItems = [
-  { name: "home", label: "Home" },
-  { name: "workouts", label: "Workout List" },
-];
 
 const Dashboard = () => {
+
   return (
-    <>
+    <AuthorizedUserCont.Consumer>
+      { authUser => authUser ? (
+        <>
       <Topbar />
       <div className="sidemenu-container">
         <Sidebar />
-        <div className="content">hello world!</div>
+        <Overview />
       </div>
-    </>
+      </>
+      ) : (<p>Bruh moment</p>)
+}
+    </AuthorizedUserCont.Consumer>
   );
 };
 
-export default withRouter(Dashboard);
+export default withRouter(withAuthentication(Dashboard));

@@ -13,12 +13,14 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
-import withRouter from '../components/withrouter';
+import withRouter from '../components/withRouter';
+// import { useNavigate } from 'react-router-dom';
 
 import {auth, db} from '../Firebase';
 
 const SignUp = (props) => {
 
+  const { location, navigate, params} = props.router;
 
   const handleChange = e => {
     const {name, value} = e.target;
@@ -62,8 +64,7 @@ const SignUp = (props) => {
         //wipes the user in file
         setUser(defaultUser);
 
-        alert('New account created!');
-        // props.history.push("/dashboard");
+        navigate('/dashboard');
     }).catch(err => {
         setUser({...user, error: err.message});
     });

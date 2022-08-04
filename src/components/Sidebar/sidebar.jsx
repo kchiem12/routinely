@@ -2,8 +2,20 @@ import React from "react";
 import './sidebar.css';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { auth } from "../../Firebase";
+import withRouter from "../withRouter.js";
+// import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ items }) => {
+const Sidebar = (props) => {
+
+  const { location, navigate, params} = props.router;
+
+  const signOut = () => {
+    auth.signOut();
+    navigate('/');
+  }
+
   return (
     <div className="sidebar">
         <div className="side-wrapper">
@@ -18,6 +30,10 @@ const Sidebar = ({ items }) => {
                 <FitnessCenterIcon className="sidebar-icons" />
                 Workouts
               </li>
+              <li className="sidebar-list-item" onClick={signOut}>
+                <ExitToAppIcon className="sidebar-icons" />
+                Sign Out
+              </li>
             </ul>
           </div>
         </div>
@@ -26,4 +42,4 @@ const Sidebar = ({ items }) => {
   );
 };
 
-export default Sidebar;
+export default withRouter(Sidebar);
