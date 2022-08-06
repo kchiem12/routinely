@@ -1,10 +1,11 @@
 import React from 'react';
+import Calendar from './Calendar';
 import './overview.css';
 
-const Overview = () => {
+const Overview = (props) => {
     return ( 
         <div className="overview">
-            CALENDAR
+            <Calendar authUser={props.authUser}/>
         </div>
      );
 }

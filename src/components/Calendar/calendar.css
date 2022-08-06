@@ -1,0 +1,26 @@
+.grid-container {
+    margin: 20px;
+}
+
+.toggle-month {
+    text-align: center;
+    cursor: pointer;
+    border-right: 1px solid gray;
+}
+
+.display-year {
+    text-align: center;
+}
+
+.month-cell {
+    cursor: pointer;
+}
+
+.month-cell:hover {
+    background-color: darkgray;
+    transition: all 600ms;
+}
+
+.select-month {
+    background-color: rgb(157, 154, 154);
+}
