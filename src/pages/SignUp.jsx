@@ -30,6 +30,7 @@ const SignUp = (props) => {
   //Generates a new user object
   const defaultUser = {
     id: null,
+    username: '',
     email: '',
     password: '',
     error: null,
@@ -54,8 +55,11 @@ const SignUp = (props) => {
         //add to database
         var database_ref = db.ref();
         
+        // Initializes the data that is to be stored into database
         var userData = {
+            username: user.username,
             email: user.email,
+            activities: 'Not created',
             last_login: Date.now()
         }
 
@@ -90,6 +94,17 @@ const SignUp = (props) => {
             Sign up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              onChange={handleChange}
+            />
             <TextField
               margin="normal"
               required

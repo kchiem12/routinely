@@ -24,3 +24,20 @@
 .select-month {
     background-color: rgb(157, 154, 154);
 }
+
+.weekday-header {
+    background-color: gray;
+}
+
+.week-day {
+    text-align: center;
+    cursor: pointer;
+}
+
+.today {
+    background-color: aqua;
+}
+
+.selected {
+    background-color: yellow !important;
+}

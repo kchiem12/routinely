@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 import { Grid } from '@mui/material';
 import './calendar.css';
 import { StyledEngineProvider } from '@mui/material';
+import ActivityLog from '../ActivityLog';
 import { withAuthentication } from '../Session';
 import { auth, db } from '../../Firebase';
 
@@ -15,8 +16,8 @@ const Calendar = (props) => {
     const dt = DateTime.now();
 
     const defaultDay = {
-        day: dt.toFormat("d"),
-        month: dt.toFormat("MMMM")
+        day: parseInt(dt.toFormat("d")),
+        month: parseInt(dt.toFormat("MM"))
     }
 
     //Hooks
@@ -28,15 +29,19 @@ const Calendar = (props) => {
 
     //Sets the currently selected day by updating the day portion of the JSON
     const setTheDay = (day) => {
-        setSelectedDay({day, month: displayMonth});
+        setSelectedDay({day, month: convertMonthToNum(displayMonth)});
     }
 
+    //Toggles the display to choose what month to display
     const toggleMonthDisplay = () => {
         setShowMonthTable(!showMonthTable);
     };
 
+
+    //Sets what month is displayed on the calendar
     const setMonth = (month) => {
         setDisplayMonth(month);
+        setSelectedDay({day: null, month: convertMonthToNum(month)});
         toggleMonthDisplay();
     };
 
@@ -61,7 +66,8 @@ const Calendar = (props) => {
         "Tuesday",
         "Wednesday",
         "Thursday",
-        "Friday"
+        "Friday",
+        "Saturday"
     ];
 
     const convertMonthToNum = (month) => {
@@ -104,10 +110,19 @@ const Calendar = (props) => {
                             {}
                         </div>
                         <CalendarBody 
-                            currMonth = {displayMonth}
+                            displayMonth = {convertMonthToNum(displayMonth)}
+                            currentMonth = {convertMonthToNum(dt.toFormat("MMMM"))}
                             daysInMonth = {daysInMonth}
-                            currentDay = {parseInt(selectedDay)}
+                            selectedDate = {selectedDay}
                             firstDayOfMonth = {firstDayOfMonth}
+                            setDate = {setTheDay}
+                            allDaysOfWeek = {allDaysOfWeek}
+                        />
+                    </Grid>
+                    <Grid item xs={7} md={7} lg={7} className="activity-log-container">
+                        <ActivityLog 
+                            selectedDate = {selectedDay}
+                            user = {user}
                         />
                     </Grid>
                 </Grid>
