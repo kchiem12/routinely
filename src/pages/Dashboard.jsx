@@ -8,6 +8,7 @@ import {AuthorizedUserCont, withAuthentication} from "../components/Session";
 import AccessDenied from "./AccessDenied.jsx";
 import { auth } from "../Firebase.js";
 
+const user = auth.currentUser;
 
 const Dashboard = () => {
 
@@ -22,18 +23,19 @@ const Dashboard = () => {
   const userLocal = JSON.parse(localStorage.getItem('user'));
 
   return (
-    <AuthorizedUserCont.Consumer>
-      { authUser => authUser ? (
+    <>
+    {
+      userLocal ? (
         <>
       <Topbar />
       <div className="sidemenu-container">
         <Sidebar />
-        <Overview authUser={authUser}/>
+        <Overview authUser={user}/>
       </div>
       </>
       ) : (<AccessDenied />)
 }
-    </AuthorizedUserCont.Consumer>
+</>
   );
 };
 

@@ -14,6 +14,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { DateTime } from "luxon";
 import { auth, db } from "../../Firebase";
 
 const AddActivity = (props) => {
@@ -144,6 +145,7 @@ const AddActivity = (props) => {
         reps: amountOfReps,
         weights: weightsEachRep,
         showReps: showReps,
+        time: DateTime.now().toUnixInteger()
       }
       let ref = db.ref().child(`users/${user.uid}/activities`);
       ref.push(activity);

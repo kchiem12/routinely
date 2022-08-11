@@ -17,8 +17,9 @@ import { auth, db } from "../../Firebase";
 import "./activitylog.css";
 
 const ActivityLog = (props) => {
+  
   // Destructuring props
-  let { selectedDate } = props;
+  let { selectedDate, user } = props;
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
   const [existActivity, setExistActivity] = useState(true);
@@ -27,21 +28,26 @@ const ActivityLog = (props) => {
   const [theSets, setTheSets] = useState([]);
   const [theActivities, setTheActivities] = useState([]);
 
-  const user = auth.currentUser;
   
 
   useEffect(() => {
     if (listOfActivities.length !== 0) {
         setListOfActivities([]);
     };
-    retrieveData();
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        retrieveData(user);
+      }
+    });
   }, [selectedDate]);
 
-  const retrieveData = () => {
+  const retrieveData = (user) => {
     let queryDate = `${selectedDate.month}-${selectedDate.day}`;
 
     // This variable will hold all the data of activity
     let data = null;
+
+    console.log(user);
 
     let ref = db.ref().child(`users/${user.uid}/activities`);
 
