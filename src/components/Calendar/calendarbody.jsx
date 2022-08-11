@@ -33,11 +33,6 @@ const CalendarBody = (props) => {
         // This table cell will be the date that the user selected
         if (selectedDate.day === j && displayMonth === selectedDate.month) isSelectedDay = 'selected';
 
-        console.log(currentMonth);
-        console.log(j);
-        console.log(selectedDate.day);
-        console.log(`${isSelectedDay}`);
-
         monthDays.push(
             <TableCell
                 key = {j}
@@ -76,7 +71,7 @@ const CalendarBody = (props) => {
 
     for (let k = 0; k < allDaysOfWeek.length; k++) {
         weekdayNames.push(
-            <TableCell colSpan={1} key={k} style={{textAlign: "center"}}>
+            <TableCell colSpan={1} key={k} style={{textAlign: "center", width: "14.2%"}}>
                 {allDaysOfWeek[k]}
             </TableCell>
         );

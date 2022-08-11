@@ -65,6 +65,7 @@ function SignIn(props) {
     
             //wipes the user in file
             setUser(defaultUser);
+
             //Switches page to dashboard
             navigate('/dashboard');
             

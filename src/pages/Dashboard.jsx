@@ -11,6 +11,16 @@ import { auth } from "../Firebase.js";
 
 const Dashboard = () => {
 
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      localStorage.setItem('user', true);
+    } else {
+      localStorage.removeItem('user');
+    }
+  })
+
+  const userLocal = JSON.parse(localStorage.getItem('user'));
+
   return (
     <AuthorizedUserCont.Consumer>
       { authUser => authUser ? (
