@@ -17,9 +17,8 @@ import { auth, db } from "../../Firebase";
 import "./activitylog.css";
 
 const ActivityLog = (props) => {
-  
   // Destructuring props
-  let { selectedDate, user } = props;
+  let { selectedDate, user, setSelectedDay } = props;
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
   const [existActivity, setExistActivity] = useState(true);
@@ -27,14 +26,13 @@ const ActivityLog = (props) => {
   const [listOfActivities, setListOfActivities] = useState([]);
   const [theSets, setTheSets] = useState([]);
   const [theActivities, setTheActivities] = useState([]);
-
-  
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     if (listOfActivities.length !== 0) {
-        setListOfActivities([]);
-    };
-    auth.onAuthStateChanged(user => {
+      setListOfActivities([]);
+    }
+    auth.onAuthStateChanged((user) => {
       if (user) {
         retrieveData(user);
       }
@@ -47,52 +45,54 @@ const ActivityLog = (props) => {
     // This variable will hold all the data of activity
     let data = null;
 
-    console.log(user);
+    let ref = db.ref().child(`users/${user.uid}/activities/`);
 
-    let ref = db.ref().child(`users/${user.uid}/activities`);
-
+    
+    // FIXED!!!!!!!
+    // Just needed to put everything inside of the once() curly braces
     ref
       .orderByChild("date")
       .equalTo(queryDate)
-      .on("value", (snapshot) => {
+      .once("value", (snapshot) => {
+
         data = snapshot.val();
+
+        if (data != null) {
+          let keys = Object.keys(data);
+
+          for (let i = 0; i < keys.length; i++) {
+            let setLists = [];
+            let dataObject = data[keys[i]];
+
+            for (let j = 0; j < dataObject.sets; j++) {
+              setLists[j] = (
+                <p key={j}>
+                  Set {j + 1}: {dataObject.reps[j]} @ {dataObject.weights[j]} LB
+                </p>
+              );
+            }
+
+            activityList[i] = (
+              <>
+                <TableCell className="activity-log-cell">{dataObject.name}</TableCell>
+                <TableCell className="activity-log-cell">{dataObject.type}</TableCell>
+                <TableCell className="activity-log-cell">{setLists}</TableCell>
+                <TableCell className="activity-log-cell">
+                  {<EditIcon className="icon" />}
+                  {<DeleteIcon className="icon" />}
+                </TableCell>
+              </>
+            );
+          }
+          setListOfActivities(activityList);
+        }
       });
 
     // Array of all the activities logged by the user
     var activityList = [];
-
-    if (data != null) {
-      let keys = Object.keys(data);
-
-      for (let i = 0; i < keys.length; i++) {
-        let setLists = [];
-        let dataObject = data[keys[i]];
-
-        for (let j = 0; j < dataObject.sets; j++) {
-          setLists[j] = (
-            <p key={j}>
-              Set {j + 1}: {dataObject.reps[j]} @ {dataObject.weights[j]} LB
-            </p>
-          );
-        }
-
-        console.log(dataObject);
-        activityList[i] = (
-          <>
-            <TableCell>{dataObject.name}</TableCell>
-            <TableCell>{dataObject.type}</TableCell>
-            <TableCell>{setLists}</TableCell>
-            <TableCell className="edit-icons">
-              {<EditIcon className="icon" />}
-              {<DeleteIcon className="icon" />}
-            </TableCell>
-          </>
-        );
-      }
-
-      setListOfActivities(activityList);
-    }
   };
+
+  setTimeout(retrieveData(user), 5000);
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
@@ -150,9 +150,7 @@ const ActivityLog = (props) => {
             )}
           </TableRow>
         </TableHead>
-        <TableBody>
-            {theActivity}
-        </TableBody>
+        <TableBody>{theActivity}</TableBody>
       </Table>
     </TableContainer>
   );

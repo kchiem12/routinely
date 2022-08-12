@@ -122,6 +122,7 @@ const Calendar = (props) => {
                     <Grid item xs={7} md={7} lg={7} className="activity-log-container">
                         <ActivityLog 
                             selectedDate = {selectedDay}
+                            setSelectedDay = {setSelectedDay}
                             user = {user}
                         />
                     </Grid>
