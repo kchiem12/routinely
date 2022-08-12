@@ -15,6 +15,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { auth, db } from "../../Firebase";
 import "./activitylog.css";
+import { set, update } from "firebase/database";
 
 const ActivityLog = (props) => {
   // Destructuring props
@@ -27,6 +28,7 @@ const ActivityLog = (props) => {
   const [theSets, setTheSets] = useState([]);
   const [theActivities, setTheActivities] = useState([]);
   const [rendered, setRendered] = useState(false);
+  const [activityKeys, setActivityKeys] = useState(null);
 
   useEffect(() => {
     if (listOfActivities.length !== 0) {
@@ -47,18 +49,18 @@ const ActivityLog = (props) => {
 
     let ref = db.ref().child(`users/${user.uid}/activities/`);
 
-    
     // FIXED!!!!!!!
     // Just needed to put everything inside of the once() curly braces
     ref
       .orderByChild("date")
       .equalTo(queryDate)
       .once("value", (snapshot) => {
-
         data = snapshot.val();
 
         if (data != null) {
           let keys = Object.keys(data);
+
+          setActivityKeys(keys);
 
           for (let i = 0; i < keys.length; i++) {
             let setLists = [];
@@ -73,18 +75,20 @@ const ActivityLog = (props) => {
             }
 
             activityList[i] = (
-              <>
-                <TableCell className="activity-log-cell">{dataObject.name}</TableCell>
-                <TableCell className="activity-log-cell">{dataObject.type}</TableCell>
-                <TableCell className="activity-log-cell">{setLists}</TableCell>
+              <React.Fragment key={i}>
                 <TableCell className="activity-log-cell">
-                  {<EditIcon className="icon" />}
-                  {<DeleteIcon className="icon" />}
+                  {dataObject.name}
                 </TableCell>
-              </>
+                <TableCell className="activity-log-cell">
+                  {dataObject.type}
+                </TableCell>
+                <TableCell className="activity-log-cell">{setLists}</TableCell>
+              </React.Fragment>
             );
+            setListOfActivities(activityList);
           }
-          setListOfActivities(activityList);
+        } else {
+          setListOfActivities([]);
         }
       });
 
@@ -92,33 +96,72 @@ const ActivityLog = (props) => {
     var activityList = [];
   };
 
-  setTimeout(retrieveData(user), 5000);
+  const deleteActivity = (i) => {
+    auth.onAuthStateChanged((user) => {
+      // Gets the specific activity key
+      if (activityKeys != null) {
+        const activityKey = activityKeys[i];
+
+        console.log(i);
+
+        console.log("this was called");
+
+        const emptyData = {
+          date: null,
+          name: null,
+          type: null,
+          sets: null,
+          reps: null,
+          weights: null,
+          showReps: null,
+          time: null,
+        };
+
+        console.log(activityKey);
+
+        console.log(user.uid);
+
+        let ref = db.ref().child(`users/${user.uid}/activities/${activityKey}`);
+        ref.set(emptyData);
+
+        retrieveData(user);
+      }
+    });
+  };
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
   const exercisesWithDistance = ["run", "cardio"];
 
   const addActivity = (theActivity) => {
-    if (theActivity.showReps) {
-      // Push all the table cells into the activity list array
-      setListOfActivities(
-        listOfActivities.concat(
-          <>
-            <TableCell>{theActivity.name}</TableCell>
-            <TableCell>{theActivity.type}</TableCell>
-            <TableCell>{theActivity.amount}</TableCell>
-            <TableCell className="edit-icons">
-              {<EditIcon className="icon" />}
-              {<DeleteIcon className="icon" />}
-            </TableCell>
-          </>
-        )
-      );
-    }
+    // if (theActivity.showReps) {
+    //   // Push all the table cells into the activity list array
+    //   setListOfActivities(
+    //     listOfActivities.concat(
+    //       <>
+    //         <TableCell>{theActivity.name}</TableCell>
+    //         <TableCell>{theActivity.type}</TableCell>
+    //         <TableCell>{theActivity.amount}</TableCell> 
+    //       </>
+    //     )
+    //   );
+    // }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        retrieveData(user);
+      }
+    })
   };
 
   let theActivity = listOfActivities.map((activities, i) => (
-    <TableRow key={i}>{activities}</TableRow>
+    <TableRow key={i}>
+      {activities}
+      <TableCell className="activity-log-cell">
+        {<EditIcon className="icon" />}
+        {<DeleteIcon className="icon" onClick={(e) => deleteActivity(i)} />}
+      </TableCell>
+    </TableRow>
   ));
 
   return (

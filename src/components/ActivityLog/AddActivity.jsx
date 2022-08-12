@@ -122,8 +122,6 @@ const AddActivity = (props) => {
                 Set {i+1}: {amountOfReps[i]} @ {weightsEachRep[i]} LB
             </p>
       }
-
-      console.log(amtReps);
       // Initialize an activity object to add
       let activity = {
         date: `${selectedMonth}-${selectedDay}`,
