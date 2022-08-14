@@ -13,9 +13,11 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  FormHelperText
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { auth, db } from "../../Firebase";
+
 
 const AddActivity = (props) => {
   const { addActivity, selectedMonth, selectedDay } = props;
@@ -41,6 +43,8 @@ const AddActivity = (props) => {
   const [numSets, setNumSets] = useState(0);
   const [theActivity, setTheActivity] = useState(defaultActivity);
   const [error, setError] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [errorNumSets, setErrorNumSets] = useState(false);
 
   const user = auth.currentUser;
 
@@ -82,6 +86,7 @@ const AddActivity = (props) => {
           label="Amount"
           type="number"
           fullWidth
+          required
           variant="standard"
           onChange={updateAmountOfReps}
           sx={{ marginTop: 0 }}
@@ -92,6 +97,7 @@ const AddActivity = (props) => {
           id={i.toString()}
           label="Weight"
           type="number"
+          required
           fullWidth
           variant="standard"
           onChange={updateWeightsEachRep}
@@ -102,6 +108,7 @@ const AddActivity = (props) => {
 
   const updateSets = (e) => {
     setNumSets(e.target.value);
+    setSelected(e.target.value);
   };
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
@@ -110,6 +117,12 @@ const AddActivity = (props) => {
 
   // Function to add the activity to the database and add it to the log
   const handleActivity = (e, sReps= setReps, aoReps = amountOfReps, woRep = weightsEachRep) => {
+
+    e.preventDefault();
+
+    setErrorNumSets(!selected);
+
+    if (selected != null) {
 
     setOpen(false);
 
@@ -133,7 +146,6 @@ const AddActivity = (props) => {
       };
 
       // To add the activity into the log
-      addActivity(activity);
 
       activity = {
         date: `${selectedMonth}-${selectedDay}`,
@@ -147,7 +159,10 @@ const AddActivity = (props) => {
       }
       let ref = db.ref().child(`users/${user.uid}/activities`);
       ref.push(activity);
+
+      addActivity(activity);
     }
+  }
   };
 
   return (
@@ -156,6 +171,7 @@ const AddActivity = (props) => {
         Add Activity
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+      <form onSubmit={handleActivity}>
         <DialogTitle>Add An Activity</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -170,6 +186,7 @@ const AddActivity = (props) => {
             type="text"
             fullWidth
             variant="standard"
+            required
             onChange={(e) => {
               setActivityName(e.target.value.replace(/^\s*[\r\n]/gm, ""));
               console.log(activityName);
@@ -185,6 +202,7 @@ const AddActivity = (props) => {
               defaultValue="Select"
               label="Type"
               sx={{ width: "300px" }}
+              required
               onChange={updateActivityType}
             >
               <MenuItem value="upper-body">Upper Body</MenuItem>
@@ -204,6 +222,7 @@ const AddActivity = (props) => {
                   label="Sets"
                   value={numSets}
                   sx={{ width: "100px" }}
+                  required
                   onChange={updateSets}
                 >
                   <MenuItem value={1}>1</MenuItem>
@@ -217,6 +236,7 @@ const AddActivity = (props) => {
                   <MenuItem value={9}>9</MenuItem>
                   <MenuItem value={10}>10</MenuItem>
                 </Select>
+                {errorNumSets && <FormHelperText>Please select number of sets you did</FormHelperText>}
               </FormControl>
               {reps}
             </>
@@ -224,8 +244,9 @@ const AddActivity = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleActivity}>Add Activity</Button>
+          <Button type="submit">Add Activity</Button>
         </DialogActions>
+        </form>
       </Dialog>
     </div>
   );

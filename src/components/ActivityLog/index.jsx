@@ -16,6 +16,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { auth, db } from "../../Firebase";
 import "./activitylog.css";
 import { set, update } from "firebase/database";
+import EditActivity from "./EditActivity";
 
 const ActivityLog = (props) => {
   // Destructuring props
@@ -158,8 +159,15 @@ const ActivityLog = (props) => {
     <TableRow key={i}>
       {activities}
       <TableCell className="activity-log-cell">
-        {<EditIcon className="icon" />}
-        {<DeleteIcon className="icon" onClick={(e) => deleteActivity(i)} />}
+        {<EditActivity 
+          activitykeys= {activityKeys}
+          activityindex = {i}
+          selectedMonth={selectedDate.month}
+          selectedDay={selectedDate.day}
+          addActivity={addActivity}
+        />}
+        {<DeleteIcon className="icon" onClick={(e) => deleteActivity(i)}
+        />}
       </TableCell>
     </TableRow>
   ));
