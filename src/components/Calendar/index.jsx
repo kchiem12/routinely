@@ -9,6 +9,7 @@ import { StyledEngineProvider } from '@mui/material';
 import ActivityLog from '../ActivityLog';
 import { withAuthentication } from '../Session';
 import { auth, db } from '../../Firebase';
+import { useEffect } from 'react';
 
 const Calendar = (props) => {
 
@@ -25,6 +26,37 @@ const Calendar = (props) => {
     const [displayMonth, setDisplayMonth] = useState(dt.toFormat("MMMM"));
     const [displayYear, setDisplayYear] = useState(dt.toFormat("yyyy"));
     const [selectedDay, setSelectedDay] = useState(defaultDay);
+    const [activityChange, setActivityChange] = useState(false);
+
+    // Activedays is a 2D array. arr[i][0] is month, while arr[i][1] is day
+    const [activeDays, setActiveDays] = useState([]);
+
+    // Keep track of days that are active
+
+
+     const retrieveActiveDays = () => {
+
+        auth.onAuthStateChanged((user) => {
+
+            if (user) {
+            let ref = db.ref().child(`users/${user.uid}/activities`);
+            ref.once("value", snapshot => {
+                let data = snapshot.val();
+                const values = Object.values(data);
+    
+                const arr = values.map(obj => {
+                    let split = obj.date.split('-');
+                    let formattedDate = `(${split[0]}, ${split[1]})`;
+                    return formattedDate;
+                });
+                setActiveDays(arr);
+    
+            })
+        }
+        })
+    };
+
+     useEffect(() => retrieveActiveDays(), [activityChange]);
 
 
     //Sets the currently selected day by updating the day portion of the JSON
@@ -117,6 +149,7 @@ const Calendar = (props) => {
                             firstDayOfMonth = {firstDayOfMonth}
                             setDate = {setTheDay}
                             allDaysOfWeek = {allDaysOfWeek}
+                            activeDays = {activeDays}
                         />
                     </Grid>
                     <Grid item xs={7} md={7} lg={7} className="activity-log-container">
@@ -124,6 +157,8 @@ const Calendar = (props) => {
                             selectedDate = {selectedDay}
                             setSelectedDay = {setSelectedDay}
                             user = {user}
+                            activityChange = {activityChange}
+                            setActivityChange = {setActivityChange}
                         />
                     </Grid>
                 </Grid>

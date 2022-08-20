@@ -39,5 +39,13 @@
 }
 
 .selected {
-    background-color: yellow !important;
+    z-index: 50;
+    background-color: yellow;
+}
+
+.active {
+    z-index: 100;
+    background-color: rgba(97, 255, 145, 0.5); 
+    padding: 10px;
+    border-radius: 17px;
 }

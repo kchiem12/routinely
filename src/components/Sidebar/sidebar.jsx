@@ -16,6 +16,14 @@ const Sidebar = (props) => {
     navigate('/');
   }
 
+  const navWorkoutList = () => {
+    navigate('/dashboard/workoutlist');
+  }
+
+  const navOverview = () => {
+    navigate('/dashboard');
+  }
+
   return (
     <div className="sidebar">
         <div className="side-wrapper">
@@ -23,10 +31,10 @@ const Sidebar = (props) => {
             <h4 className="title-side">Dashboard</h4>
             <ul className="sidebar-list">
               <li className="sidebar-list-item">
-                <WysiwygIcon className="sidebar-icons" />
+                <WysiwygIcon className="sidebar-icons" onClick={navOverview} />
                 Overview
               </li>
-              <li className="sidebar-list-item">
+              <li className="sidebar-list-item" onClick={navWorkoutList}>
                 <FitnessCenterIcon className="sidebar-icons" />
                 Workouts
               </li>

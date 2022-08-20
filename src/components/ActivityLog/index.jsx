@@ -20,7 +20,7 @@ import EditActivity from "./EditActivity";
 
 const ActivityLog = (props) => {
   // Destructuring props
-  let { selectedDate, user, setSelectedDay } = props;
+  let { selectedDate, user, setSelectedDay, activityChange, setActivityChange } = props;
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
   const [existActivity, setExistActivity] = useState(true);
@@ -87,7 +87,10 @@ const ActivityLog = (props) => {
               </React.Fragment>
             );
             setListOfActivities(activityList);
+            setActivityChange(!activityChange);
           }
+
+
         } else {
           setListOfActivities([]);
         }

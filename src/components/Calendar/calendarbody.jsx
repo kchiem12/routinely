@@ -8,7 +8,7 @@ const CalendarBody = (props) => {
 
     const dt = DateTime.now();
 
-    let {displayMonth, currentMonth, daysInMonth, selectedDate, firstDayOfMonth, setDate, allDaysOfWeek} = props;
+    let {displayMonth, currentMonth, daysInMonth, selectedDate, firstDayOfMonth, setDate, allDaysOfWeek, activeDays} = props;
 
     // Gets the current day and current month
     let currentDay = parseInt(dt.toFormat("dd"));
@@ -22,14 +22,18 @@ const CalendarBody = (props) => {
 
     let monthDays = [];
 
+
     for (let j = 1; j <= daysInMonth(); j++) {
         
         // These variables are used to add special CSS to selected date and current date
-        let isCurrentDay, isSelectedDay;
+        let isCurrentDay, isSelectedDay, isActive;
 
         // That table cell is the current date
         if (currentDay === j && currentMonth === displayMonth) isCurrentDay = 'today';
         
+        // This table cell has an activity logged on
+        if (activeDays.includes(`(${displayMonth.toString()}, ${j.toString()})`)) isActive = 'active';
+
         // This table cell will be the date that the user selected
         if (selectedDate.day === j && displayMonth === selectedDate.month) isSelectedDay = 'selected';
 
@@ -40,7 +44,7 @@ const CalendarBody = (props) => {
                 colSpan={1}
                 onClick={() => setDate(j)}
             >
-                <span className='day'>{j}</span>
+                <span className={`day ${isActive}`}>{j}</span>
             </TableCell>
         );
     };
