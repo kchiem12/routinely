@@ -22,6 +22,7 @@ const Sidebar = (props) => {
 
   const navOverview = () => {
     navigate('/dashboard');
+    console.log('Pressed \'OVERVIEW\'');
   }
 
   return (
@@ -30,8 +31,8 @@ const Sidebar = (props) => {
           <div className="sidebar-menu">
             <h4 className="title-side">Dashboard</h4>
             <ul className="sidebar-list">
-              <li className="sidebar-list-item">
-                <WysiwygIcon className="sidebar-icons" onClick={navOverview} />
+              <li className="sidebar-list-item" onClick={navOverview}>
+                <WysiwygIcon className="sidebar-icons" />
                 Overview
               </li>
               <li className="sidebar-list-item" onClick={navWorkoutList}>
