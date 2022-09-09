@@ -1,0 +1,26 @@
+.access-denied {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(#2E0249, #570A57);
+}
+
+.access-denied-container {
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.access-title {
+    font-size: 150px;
+    font-weight: 400;
+    color: #A91079;
+}
+
+.description {
+    font-size: 30px;
+    color: #2E0249;
+}
+
