@@ -11,24 +11,17 @@ import {
   Paper,
 } from "@mui/material";
 import AddActivity from "./AddActivity";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { auth, db } from "../../Firebase";
 import "./activitylog.css";
-import { set, update } from "firebase/database";
 import EditActivity from "./EditActivity";
 
 const ActivityLog = (props) => {
   // Destructuring props
-  let { selectedDate, user, setSelectedDay, activityChange, setActivityChange, activeDays, setActiveDays } = props;
+  let { selectedDate, activityChange, setActivityChange, activeDays, setActiveDays } = props;
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
-  const [existActivity, setExistActivity] = useState(true);
-  const [activity, setActivity] = useState(null);
   const [listOfActivities, setListOfActivities] = useState([]);
-  const [theSets, setTheSets] = useState([]);
-  const [theActivities, setTheActivities] = useState([]);
-  const [rendered, setRendered] = useState(false);
   const [activityKeys, setActivityKeys] = useState(null);
 
   useEffect(() => {
@@ -100,6 +93,8 @@ const ActivityLog = (props) => {
     var activityList = [];
   };
 
+
+  // Deletes activity from Firebase Database
   const deleteActivity = (i) => {
     auth.onAuthStateChanged((user) => {
       // Gets the specific activity key
@@ -133,24 +128,14 @@ const ActivityLog = (props) => {
     });
   };
 
+
+  // Configure different pop-up if user wants to store cardio exercises
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
   const exercisesWithDistance = ["run", "cardio"];
 
+  // Gets the exercise data from database
   const addActivity = (theActivity) => {
-    // if (theActivity.showReps) {
-    //   // Push all the table cells into the activity list array
-    //   setListOfActivities(
-    //     listOfActivities.concat(
-    //       <>
-    //         <TableCell>{theActivity.name}</TableCell>
-    //         <TableCell>{theActivity.type}</TableCell>
-    //         <TableCell>{theActivity.amount}</TableCell> 
-    //       </>
-    //     )
-    //   );
-    // }
-
     auth.onAuthStateChanged((user) => {
       if (user) {
         retrieveData(user);
@@ -183,7 +168,7 @@ const ActivityLog = (props) => {
             <TableCell
               colSpan={3}
             >{`Activity log for ${selectedDate.month}/${selectedDate.day}`}</TableCell>
-            <TableCell colSpan={1}>
+            <TableCell colSpan={1} align='center'>
               <AddActivity
                 addActivity={addActivity}
                 selectedMonth={selectedDate.month}
@@ -192,7 +177,7 @@ const ActivityLog = (props) => {
             </TableCell>
           </TableRow>
           <TableRow>
-            {existActivity ? (
+            {listOfActivities.length !== 0 ? (
               <>
                 <TableCell>name</TableCell>
                 <TableCell>type</TableCell>
@@ -200,7 +185,9 @@ const ActivityLog = (props) => {
                 <TableCell>edit/delete</TableCell>
               </>
             ) : (
-              <h1>You haven't logged any activities on this day</h1>
+              <TableCell colSpan={8} align="center">
+                <h1>You haven't logged any activities on this day</h1>
+              </TableCell>
             )}
           </TableRow>
         </TableHead>

@@ -37,7 +37,7 @@ const ExpandMore = styled((props) => {
     };
   
     return (
-      <Card sx={{ maxWidth: 400 }}>
+      <Card sx={{ maxWidth: 400 }} className="workout-card">
         <CardHeader
           title="Lat Pulldowns"    // Put workoutName
           subheader="Back, Biceps"  // Put workoutType
@@ -50,9 +50,7 @@ const ExpandMore = styled((props) => {
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary"> 
-            This impressive paella is a perfect party dish and a fun meal to cook {/* put workoutDescription */}
-            together with your guests. Add 1 cup of frozen peas along with the mussels,
-            if you like.
+            {workoutDescription}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>

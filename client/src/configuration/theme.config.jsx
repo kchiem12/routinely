@@ -5,13 +5,14 @@ const theme = createTheme({
         fontFamily: 'Quicksand'
     },
     palette: {
+        mode: 'dark',
         primary: {
-            main: '#00051a'
+          main: '#FFFFFF',
         },
         secondary: {
-            main: '#ff7e38'
-        }
-    }
+          main: '#C624B6',
+        },
+      },
 });
 
 export default theme;

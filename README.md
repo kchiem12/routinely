@@ -12,7 +12,7 @@ the option to add a workout they have done during that day.
 There is also a Workouts tab on the sidebar, which is used for the user's convenience to look at various workouts to see which ones
 they should do or try out. Currently, this page is a work-in-progress.
 
-**The app is functional, however there are a list of things that still need to be done:**
+**The app is functional, however there are a list of things that still needs to be done:**
 1. Finish the workouts list tab
 2. Allow users to customize their dashboard and account settings
 3. Add a chart to graph their activity

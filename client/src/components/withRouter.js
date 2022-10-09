@@ -4,6 +4,9 @@ import {
     useParams,
   } from "react-router-dom";
   
+
+  // This is made to make the react router functional
+  // This is a higher ordered component
   function withRouter(Component) {
     function ComponentWithRouterProp(props) {
       let location = useLocation();

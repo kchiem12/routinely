@@ -4,6 +4,9 @@ import { Avatar } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 const Topbar = () => {
+
+
+    // TODO: Add functionality to the settings
     return ( 
         <div className="topbar">
             <div className="bar-wrapper">

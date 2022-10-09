@@ -3,7 +3,6 @@
 }
 
 .toggle-month {
-    text-align: center;
     cursor: pointer;
     border-right: 1px solid gray;
 }

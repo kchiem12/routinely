@@ -3,45 +3,41 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withRouter';
 import PasswordForget from '../components/PasswordForget';
-// import { useNavigate } from 'react-router-dom';
-
+import { ThemeProvider } from "@mui/material/styles";
+import theme from '../configuration/theme.config';
 import { auth, db } from '../Firebase';
 
 function SignIn(props) {
 
+
+    //Generates a new user object
+    const defaultUser = {
+      id: null,
+      email: '',
+      password: '',
+      error: null,
+      auth: null
+    };
+  //Set state of the user
+  const [user, setUser] = React.useState(defaultUser);
   //Uses history to programatically change routes
   const { location, navigate, params} = props.router;
 
 
+  // Used to handle updates in the form
   const handleChange = e => {
     const {name, value} = e.target;
     setUser({...user, [name]: value});
   };
-
-  //Generates a new user object
-  const defaultUser = {
-    id: null,
-    email: '',
-    password: '',
-    error: null,
-    auth: null
-  };
-
-
-  //Set state of the user
-  const [user, setUser] = React.useState(defaultUser);
 
   const isValid = user.email === '' || user.password ==='';
 
@@ -72,13 +68,12 @@ function SignIn(props) {
 
     }).catch(err => {
       setUser({...user, error: err.message});
-      console.log(user.email);
-      console.log(user.password);
     });
   };
 
 
   return (
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -92,9 +87,11 @@ function SignIn(props) {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -107,6 +104,7 @@ function SignIn(props) {
               autoFocus
               onChange={handleChange}
             />
+
             <TextField
               margin="normal"
               required
@@ -118,9 +116,11 @@ function SignIn(props) {
               autoComplete="current-password"
               onChange={handleChange}
             />
+
               <Typography className='error'>
                 {user.error ? user.error : ''}
             </Typography>
+
             <Button
               type="submit"
               fullWidth
@@ -130,21 +130,27 @@ function SignIn(props) {
             >
               Sign In
             </Button>
+
             <Grid container>
               <Grid item xs>
+
                 <PasswordForget>
                 </PasswordForget>
+
               </Grid>
+
               <Grid item>
-                <Link to="/sign-up">
+                <Link to="/sign-up" style={{textDecoration: 'none', color: '#C624B6'}}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
+              
             </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      </ThemeProvider>
   );
 }
 

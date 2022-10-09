@@ -1,8 +1,6 @@
 import React from 'react';
 import './calendar.css';
-import { DateTime } from 'luxon';
 import { TableCell, TableContainer, Table, TableHead, TableRow, TableBody} from '@mui/material';
-import { useState } from 'react';
 import { Paper } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
@@ -15,15 +13,15 @@ const CalendarHead = (props) => {
 
     allMonths.map(month => (
         months.push(
-            <TableCell className='month-cell' colSpan="2" key={month} style={{textAlign: 'center'}} onClick={e => setMonth(month)}>
+            <TableCell className='month-cell' sx={{width: '25%'}} key={month} style={{textAlign: 'center'}} onClick={e => setMonth(month)}>
                 <span>{month}</span>
             </TableCell>
         )
     ));
 
+    // Formatting the TableCell into rows and cells of a table
     let rows = [];
     let cells = [];
-
     months.forEach((month, i) => {
         if (i % 4 !== 0 || i === 0) {
             cells.push(month);
@@ -34,6 +32,7 @@ const CalendarHead = (props) => {
         }
     });
 
+    // Push the remaining months into a row
     rows.push(cells);
 
     let listMonths = rows.map((row, i) => <TableRow key={i}>{row}</TableRow>)
@@ -43,11 +42,11 @@ const CalendarHead = (props) => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell className='toggle-month' colSpan="4"  onClick={() => toggleMonthSelect()}>
+                        <TableCell className='toggle-month' align='center' colSpan='3' onClick={() => toggleMonthSelect()}>
                             {currentMonth}
                             <ArrowDropDownIcon className='arrow-icon'/>
                         </TableCell>
-                        <TableCell className='display-year' colSpan="4">
+                        <TableCell className='display-year' colSpan='1' align='center'>
                             {currentYear}
                         </TableCell>
                     </TableRow>

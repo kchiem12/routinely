@@ -12,6 +12,11 @@ const user = auth.currentUser;
 
 const Dashboard = () => {
 
+
+  // TODO: Overhaul this entire mess of authentication and storing session status
+  const userLocal = JSON.parse(localStorage.getItem('user'));
+
+  // This is to store the fact that the user is logged into the site
   auth.onAuthStateChanged(user => {
     if (user) {
       localStorage.setItem('user', true);
@@ -19,8 +24,6 @@ const Dashboard = () => {
       localStorage.removeItem('user');
     }
   })
-
-  const userLocal = JSON.parse(localStorage.getItem('user'));
 
   return (
     <>

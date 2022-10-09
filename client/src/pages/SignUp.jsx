@@ -3,45 +3,41 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withRouter';
-// import { useNavigate } from 'react-router-dom';
-
 import {auth, db} from '../Firebase';
 
 const SignUp = (props) => {
 
-  const { location, navigate, params} = props.router;
+    //Generates a new user object
+    const defaultUser = {
+      id: null,
+      username: '',
+      email: '',
+      password: '',
+      error: null,
+      auth: null,
+      last_login: null
+    };
 
+  const { location, navigate, params} = props.router;
+    //Set state of the user
+    const [user, setUser] = React.useState(defaultUser);
+
+
+  // For when button is pressed
   const handleChange = e => {
     const {name, value} = e.target;
     setUser({...user, [name]: value});
   };
 
-  //Generates a new user object
-  const defaultUser = {
-    id: null,
-    username: '',
-    email: '',
-    password: '',
-    error: null,
-    auth: null,
-    last_login: null
-  };
-
-
-  //Set state of the user
-  const [user, setUser] = React.useState(defaultUser);
-
+  
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -74,11 +70,16 @@ const SignUp = (props) => {
     });
   };
 
+  // Initalize variable to check if the email or password input is valid
   const isValid = user.email === '' || user.password ==='';
 
   return (
       <Container component="main" maxWidth="xs">
+
+        {/* Used to normalize CSS */}
         <CssBaseline />
+
+        {/*Box layout for the sign up screen*/}
         <Box
           sx={{
             marginTop: 8,
@@ -87,71 +88,75 @@ const SignUp = (props) => {
             alignItems: 'center',
           }}
         >
+
+          {/*Avatar (to display the lock icon)*/}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={handleChange}
-            />
 
-            <Typography className='err-signup'>
-                {user.error ? user.error : ''}
-            </Typography>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isValid}
-            >
-              Sign Up
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                {/* <Link href="#" variant="body2">
-                  Forgot password?
-                </Link> */}
+          {/* This box takes 'form' as its root component */}
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={handleChange}
+              />
+
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={handleChange}
+              />
+
+              {/* Throws an error here if there is an error */}
+              <Typography className='err-signup'>
+                  {user.error ? user.error : ''}
+              </Typography>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={isValid}
+              >
+                Sign Up
+              </Button>
+
+              <Grid container direction={"row-reverse"}>
+                <Grid item>
+                  <Link to="/" style={{textDecoration: 'none', color: '#C624B6'}}>
+                    {"Have an account? Sign In!"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link to="/">
-                  {"Have an account? Sign In!"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

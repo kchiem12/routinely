@@ -50,7 +50,7 @@ const PasswordForget = () => {
 
     return ( 
         <div>
-            <Link href='#' onClick={handleClickOpen}>
+            <Link href='#' color={'secondary'}  onClick={handleClickOpen}>
                 Forgot Password?
             </Link>
             <Dialog open={open} onClose={handleClickClose}>

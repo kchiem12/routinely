@@ -7,7 +7,6 @@ import { Grid } from '@mui/material';
 import './calendar.css';
 import { StyledEngineProvider } from '@mui/material';
 import ActivityLog from '../ActivityLog';
-import { withAuthentication } from '../Session';
 import { auth, db } from '../../Firebase';
 import { useEffect } from 'react';
 
@@ -32,10 +31,9 @@ const Calendar = (props) => {
     const [activeDays, setActiveDays] = useState([]);
 
     // Keep track of days that are active
-
-
      const retrieveActiveDays = () => {
 
+        // Retrieves the data from Firebase, but later want to retrieve it from MongoDB
         auth.onAuthStateChanged((user) => {
 
             if (user) {
@@ -56,12 +54,15 @@ const Calendar = (props) => {
         })
     };
 
+    // When an activity is added or deleted, we must update and retrieve from our database to update our website
     useEffect(() => retrieveActiveDays(), [activityChange]);
+
 
     //Sets the currently selected day by updating the day portion of the JSON
     const setTheDay = (day) => {
         setSelectedDay({day, month: convertMonthToNum(displayMonth)});
     }
+
 
     //Toggles the display to choose what month to display
     const toggleMonthDisplay = () => {
@@ -91,6 +92,7 @@ const Calendar = (props) => {
         "November",
         "December"
     ]
+
     const allDaysOfWeek = [
         "Sunday",
         "Monday",
@@ -109,7 +111,7 @@ const Calendar = (props) => {
         return parseInt(year);
     };
 
-    //toggles the month select view
+    //Toggles the month select view
     const toggleMonthSelect = () => setShowMonthTable(!showMonthTable);
 
     // Apparently, both arguments in the DateTime.local() function needs to be integers, so a conversion is necessary
@@ -125,7 +127,7 @@ const Calendar = (props) => {
 
     return ( 
             <StyledEngineProvider injectFirst>
-                <Grid container spacing={5}>
+                <Grid container spacing={5} justifyContent="center" alignItems="center">
                     <Grid item xs={12} md={12} lg={12} className="grid-container">
                         <CalendarHead
                             allMonths={allMonths}
@@ -136,9 +138,6 @@ const Calendar = (props) => {
                             setMonth = {setMonth}
                             setYear = {setDisplayYear}
                         />
-                        <div style={{color: "green"}}>
-                            {}
-                        </div>
                         <CalendarBody 
                             displayMonth = {convertMonthToNum(displayMonth)}
                             currentMonth = {convertMonthToNum(dt.toFormat("MMMM"))}
@@ -150,6 +149,7 @@ const Calendar = (props) => {
                             activeDays = {activeDays}
                         />
                     </Grid>
+
                     <Grid item xs={7} md={7} lg={7} className="activity-log-container">
                         <ActivityLog 
                             selectedDate = {selectedDay}
@@ -160,6 +160,10 @@ const Calendar = (props) => {
                             activeDays = {activeDays}
                             setActiveDays = {setActiveDays}
                         />
+                    </Grid>
+
+                    <Grid item xs={12} md={12} lg={12}>
+                        {/* Add a chart component here */}
                     </Grid>
                 </Grid>
             </StyledEngineProvider>
