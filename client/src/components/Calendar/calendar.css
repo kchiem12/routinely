@@ -13,6 +13,7 @@
 
 .month-cell {
     cursor: pointer;
+    font-weight: bold;
 }
 
 .month-cell:hover {

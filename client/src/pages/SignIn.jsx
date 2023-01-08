@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import withRouter from '../components/withRouter';
 import PasswordForget from '../components/PasswordForget';
 import { ThemeProvider } from "@mui/material/styles";
-import theme from '../configuration/theme.config';
+import theme from '../Theme/theme';
 import { auth, db } from '../Firebase';
 
 function SignIn(props) {
@@ -27,6 +27,7 @@ function SignIn(props) {
       error: null,
       auth: null
     };
+    
   //Set state of the user
   const [user, setUser] = React.useState(defaultUser);
   //Uses history to programatically change routes
@@ -74,7 +75,7 @@ function SignIn(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xl">
         <CssBaseline />
         <Box
           sx={{

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CalendarBody from './calendarbody';
 import CalendarHead from './calendarhead';
 import { DateTime } from 'luxon';
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import './calendar.css';
 import { StyledEngineProvider } from '@mui/material';
 import ActivityLog from '../ActivityLog';
@@ -22,6 +22,7 @@ const Calendar = (props) => {
 
     //Hooks
     const[showMonthTable, setShowMonthTable] = useState(false);
+    const [showYearTable, setShowYearTable] = useState(false);
     const [displayMonth, setDisplayMonth] = useState(dt.toFormat("MMMM"));
     const [displayYear, setDisplayYear] = useState(dt.toFormat("yyyy"));
     const [selectedDay, setSelectedDay] = useState(defaultDay);
@@ -77,6 +78,10 @@ const Calendar = (props) => {
         toggleMonthDisplay();
     };
 
+    const setYear = (year) => {
+
+    };
+
     // These arrays will help with enumerating the months and weekday
     const allMonths = [
         "January",
@@ -127,45 +132,43 @@ const Calendar = (props) => {
 
     return ( 
             <StyledEngineProvider injectFirst>
-                <Grid container spacing={5} justifyContent="center" alignItems="center">
-                    <Grid item xs={12} md={12} lg={12} className="grid-container">
-                        <CalendarHead
-                            allMonths={allMonths}
-                            currentMonth={displayMonth}
-                            toggleMonthSelect={toggleMonthSelect}
-                            showMonthTable = {showMonthTable}
-                            currentYear={displayYear}
-                            setMonth = {setMonth}
-                            setYear = {setDisplayYear}
-                        />
-                        <CalendarBody 
-                            displayMonth = {convertMonthToNum(displayMonth)}
-                            currentMonth = {convertMonthToNum(dt.toFormat("MMMM"))}
-                            daysInMonth = {daysInMonth}
-                            selectedDate = {selectedDay}
-                            firstDayOfMonth = {firstDayOfMonth}
-                            setDate = {setTheDay}
-                            allDaysOfWeek = {allDaysOfWeek}
-                            activeDays = {activeDays}
-                        />
+                    <Grid container justifyContent="center" direction="column">
+                        <Grid item xs={4} md={6} lg={12} className="grid-container">
+                            <CalendarHead
+                                allMonths={allMonths}
+                                currentMonth={displayMonth}
+                                toggleMonthSelect={toggleMonthSelect}
+                                showMonthTable = {showMonthTable}
+                                currentYear={parseInt(displayYear)}
+                                setMonth = {setMonth}
+                                setYear = {setDisplayYear}
+                            />
+                            <CalendarBody
+                                displayMonth = {convertMonthToNum(displayMonth)}
+                                currentMonth = {convertMonthToNum(dt.toFormat("MMMM"))}
+                                daysInMonth = {daysInMonth}
+                                selectedDate = {selectedDay}
+                                firstDayOfMonth = {firstDayOfMonth}
+                                setDate = {setTheDay}
+                                allDaysOfWeek = {allDaysOfWeek}
+                                activeDays = {activeDays}
+                            />
+                        </Grid>
+                        <Grid item className="activity-log-container" style={{ alignSelf: 'center' }} sx={{ width: 7/10 }} >
+                            <ActivityLog
+                                selectedDate = {selectedDay}
+                                setSelectedDay = {setSelectedDay}
+                                user = {user}
+                                activityChange = {activityChange}
+                                setActivityChange = {setActivityChange}
+                                activeDays = {activeDays}
+                                setActiveDays = {setActiveDays}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12}>
+                            {/* Add a chart component here */}
+                        </Grid>
                     </Grid>
-
-                    <Grid item xs={7} md={7} lg={7} className="activity-log-container">
-                        <ActivityLog 
-                            selectedDate = {selectedDay}
-                            setSelectedDay = {setSelectedDay}
-                            user = {user}
-                            activityChange = {activityChange}
-                            setActivityChange = {setActivityChange}
-                            activeDays = {activeDays}
-                            setActiveDays = {setActiveDays}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={12} lg={12}>
-                        {/* Add a chart component here */}
-                    </Grid>
-                </Grid>
             </StyledEngineProvider>
 
      );

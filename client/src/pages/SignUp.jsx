@@ -12,6 +12,8 @@ import Copyright from '../components/Copyright';
 import { Link } from 'react-router-dom';
 import withRouter from '../components/withRouter';
 import {auth, db} from '../Firebase';
+import theme from '../Theme/theme';
+import { ThemeProvider } from "@mui/material/styles";
 
 const SignUp = (props) => {
 
@@ -74,6 +76,8 @@ const SignUp = (props) => {
   const isValid = user.email === '' || user.password ==='';
 
   return (
+
+<ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
 
         {/* Used to normalize CSS */}
@@ -161,6 +165,7 @@ const SignUp = (props) => {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      </ThemeProvider>
   );
 }
 

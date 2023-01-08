@@ -1,19 +1,23 @@
 import React from 'react';
 import './calendar.css';
-import { TableCell, TableContainer, Table, TableHead, TableRow, TableBody} from '@mui/material';
+import { TableCell, TableContainer, Table, TableHead, TableRow, TableBody, FormControl, Select, MenuItem, menuItemClasses} from '@mui/material';
 import { Paper } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { DateTime } from 'luxon';
 
 
 const CalendarHead = (props) => {
 
     let {allMonths, currentMonth, toggleMonthSelect, currentYear, setMonth, setYear, showMonthTable} = props;
- 
+    const dt = DateTime.now();
+
+
     let months=[];
 
+    // Adds month cells to dropwdown menu
     allMonths.map(month => (
         months.push(
-            <TableCell className='month-cell' sx={{width: '25%'}} key={month} style={{textAlign: 'center'}} onClick={e => setMonth(month)}>
+            <TableCell className='month-cell' key={month} style={{textAlign: 'center'}} onClick={e => setMonth(month)}>
                 <span>{month}</span>
             </TableCell>
         )
@@ -32,6 +36,16 @@ const CalendarHead = (props) => {
         }
     });
 
+
+    // Array to hold all the years to select from
+    let yearMenuItems = [];
+    for (var i = 0; i < 40; i++) {
+        yearMenuItems.push(
+            <MenuItem value={parseInt(dt.toFormat("yyyy")) - i}>{parseInt(dt.toFormat("yyyy")) - i}</MenuItem>
+        );
+    };
+
+
     // Push the remaining months into a row
     rows.push(cells);
 
@@ -39,22 +53,29 @@ const CalendarHead = (props) => {
 
     return ( 
         <TableContainer component={Paper} className='month-selector'>
-            <Table>
+            <Table sx={{ minWidth: 200 }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell className='toggle-month' align='center' colSpan='3' onClick={() => toggleMonthSelect()}>
+                        <TableCell className='toggle-month' align='center' colSpan={2} sx={{ width: 1/2 }} onClick={() => toggleMonthSelect()}>
                             {currentMonth}
                             <ArrowDropDownIcon className='arrow-icon'/>
                         </TableCell>
-                        <TableCell className='display-year' colSpan='1' align='center'>
-                            {currentYear}
+                        <TableCell className='display-year' align='center' colSpan={2} sx={{ width: 1/2 }}>
+                            <FormControl sx={{ width: 1, border: 'none' }}> 
+                                <Select
+                                    value={currentYear}
+                                    onChange={(e) => setYear(e.target.value)}
+                                >
+                                    {yearMenuItems}
+                                </Select>
+                            </FormControl>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 {showMonthTable ? (
                     <TableBody>
                         <TableRow>
-                            <TableCell style={{textAlign: "center"}} colSpan="8" className="select-month">
+                            <TableCell style={{textAlign: "center"}} colSpan={4} className="select-month">
                                 Select a month
                             </TableCell>
                         </TableRow>

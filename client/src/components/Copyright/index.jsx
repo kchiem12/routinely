@@ -1,10 +1,11 @@
 import { Typography } from "@mui/material";
 
+
+// Footer
 function Copyright(props) {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        {'Made with love from the Chiem family\'s living room '}
+        {'Made with love by Kenneth Chiem  © '}
         {new Date().getFullYear()}
         {'.'}
       </Typography>
