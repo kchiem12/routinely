@@ -13,7 +13,8 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  FormHelperText
+  FormHelperText,
+  Typography
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { auth, db } from "../../Firebase";
@@ -45,6 +46,8 @@ const AddActivity = (props) => {
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [errorNumSets, setErrorNumSets] = useState(false);
+  const [distance, setDistance] = useState(-1);
+  const [time, setTime] = useState(-1);
 
   const user = auth.currentUser;
 
@@ -81,7 +84,7 @@ const AddActivity = (props) => {
         <InputLabel id={(i+1).toString()}>{`Set ${(i+1).toString()}`}</InputLabel>
         <TextField
           autoFocus
-          margin="dense"
+          margin="normal"
           id={i.toString()}
           label="Amount"
           type="number"
@@ -93,7 +96,7 @@ const AddActivity = (props) => {
         ></TextField>
         <TextField
           autoFocus
-          margin="dense"
+          margin="normal"
           id={i.toString()}
           label="Weight"
           type="number"
@@ -113,7 +116,7 @@ const AddActivity = (props) => {
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
-  const exercisesWithDistance = ["run", "cardio"];
+  const exercisesWithDistance = ["run"];
 
   // Function to add the activity to the database and add it to the log
   const handleActivity = (e, sReps= setReps, aoReps = amountOfReps, woRep = weightsEachRep) => {
@@ -175,12 +178,11 @@ const AddActivity = (props) => {
         <DialogTitle>Add An Activity</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Enter what you did today, type of exercise, and how long you did it
-            for
+            Enter a workout you did.
           </DialogContentText>
           <TextField
             autoFocus
-            margin="dense"
+            margin="normal"
             id="name"
             label="Activity Name"
             type="text"
@@ -208,20 +210,19 @@ const AddActivity = (props) => {
               <MenuItem value="upper-body">Upper Body</MenuItem>
               <MenuItem value="back">Back</MenuItem>
               <MenuItem value="lowerbody">Lower Body/Legs</MenuItem>
-              <MenuItem value="cardio">Cardio</MenuItem>
               <MenuItem value="run">Run</MenuItem>
             </Select>
           </FormControl>
 
           {showReps ? (
             <>
-              <FormControl>
+              <FormControl margin="normal" >
                 <InputLabel id="amount-sets">Sets</InputLabel>
                 <Select
                   labelId="amount-sets"
                   label="Sets"
                   value={numSets}
-                  sx={{ width: "100px" }}
+                  sx={{ width: "100px"}}
                   required
                   onChange={updateSets}
                 >
@@ -241,6 +242,36 @@ const AddActivity = (props) => {
               {reps}
             </>
           ) : null}
+          { showDuration ? (
+            <div className="sets" style={{ marginTop: "10px" }}>
+            <InputLabel>
+              <Typography>
+                Run
+                </Typography>
+            </InputLabel>
+            <TextField
+              autoFocus
+              margin="normal"
+              label="Distance (miles)"
+              type="number"
+              fullWidth
+              required
+              variant="standard"
+              onChange={(e) => setDistance(e.target.value)}
+            ></TextField>
+            <TextField
+              autoFocus
+              margin="normal"
+              label="Time (min)"
+              type="number"
+              required
+              fullWidth
+              variant="standard"
+              onChange={(e) => setTime(e.target.value)}
+            ></TextField>
+          </div>
+          ) : null
+          }
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>

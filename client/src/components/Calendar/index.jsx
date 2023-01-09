@@ -78,10 +78,6 @@ const Calendar = (props) => {
         toggleMonthDisplay();
     };
 
-    const setYear = (year) => {
-
-    };
-
     // These arrays will help with enumerating the months and weekday
     const allMonths = [
         "January",

@@ -61,10 +61,11 @@ const CalendarHead = (props) => {
                             <ArrowDropDownIcon className='arrow-icon'/>
                         </TableCell>
                         <TableCell className='display-year' align='center' colSpan={2} sx={{ width: 1/2 }}>
-                            <FormControl sx={{ width: 1, border: 'none' }}> 
+                            <FormControl sx={{ width: 1, border: 'none' }} > 
                                 <Select
                                     value={currentYear}
                                     onChange={(e) => setYear(e.target.value)}
+                                    sx={{ boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 } }}
                                 >
                                     {yearMenuItems}
                                 </Select>

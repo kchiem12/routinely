@@ -1,57 +1,91 @@
 const { default: mongoose } = require('mongoose');
 const Exercise = require('../models/Exercise');
+const asyncHandler = require('express-async-handler');
 
+// GET request to get the user's exercises
+const getExercise = asyncHandler(async(req, res) => {
+    const exercise = await Exercise.find({ user: req.user.id });
+    
+    res.status(200).json(exercise);
+});
 
 // Create a new exercise into database
-const createExercise = async (req, res) => {
-    const {name, sets, reps, type, showRepsweights, weights} = req.body;
-    try {
-        const exercise = await Exercise.create({name, sets, reps, type, showRepsweights, weights});
-        res.status(200).json(exercise);
-    } catch (err) {
-        res.status(400).json({error: err.message});
-    }
-};
+const createExercise = asyncHandler(async (req, res) => {
 
-// Deletes an exercise
-const deleteExercise = async (req, res) => {
-    const {id} = req.params;
+    const {name, date, type, sets, reps, weights, time, pace} = req.body;
 
-    // checks if the id is valid
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({error: "No such exercise exists!"});
+    if (!name || !date || !type) {
+        res.status(400);
+        throw new Error('Required fields are not inputted');
     }
 
-    const exercise = await Exercise.findOneAndDelete({_id: id});
-
-    if (!exercise) {
-        return res.status(404).json({error: "No such exercise found!"});
-    }
-
-    res.status(200).json(exercise);
-}
-
-// Updates an exercise
-const updateExercise = async (req, res) => {
-    const {id} = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({error: "No such exercise exists!"});
-    }
-
-    const exercise = await Exercise.findOneAndUpdate({_id: id}, {
-        ...req.body
+    const exercise = await Exercise.create({
+        user: req.user.id,
+        name,
+        date,
+        type,
+        sets,
+        reps,
+        weights,
+        time,
+        pace
     });
 
+    res.status(200).json(exercise);
+});
+
+// Deletes an exercise
+const deleteExercise = asyncHandler(async (req, res) => {
+    const exercise = await Exercise.findById(req.params.id);
+
     if (!exercise) {
-        return res.status(404).json({error: "No such exercise found!"});
+        res.status(400);
+        throw new Error("Exercise not found");
     }
 
-    res.status(200).json(exercise);
+    if (!req.user) {
+        res.status(401);
+        throw new Error("User not found");
+    }
 
-}
+    if (exercise.user.toString() !== req.user.id) {
+        res.status(401);
+        throw new Error("User not authorized");
+    }
+
+    await exercise.remove();
+
+    res.status(200).json({id: req.params.id});
+});
+
+// Updates an exercise
+const updateExercise = asyncHandler(async (req, res) => {
+    const exercise = await Exercise.findById(req.params.id);
+
+    if (!exercise) {
+        res.status(400);
+        throw new Error("Exercise not found");
+    }
+
+    if (!req.user) {
+        res.status(400);
+        throw new Error("User not found");
+    }
+
+    if (exercise.user.toString() !== req.user.id) {
+        res.status(401);
+        throw new Error("User not authorized");
+    }
+
+    const updatedExercise = await Exercise.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedExercise);
+});
 
 module.exports = {
+    getExercise,
     createExercise,
     deleteExercise,
     updateExercise

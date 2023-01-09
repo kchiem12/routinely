@@ -1,6 +1,9 @@
 const express = require('express');
 const Exercise = require('../models/Exercise');
+const { protect } = require('../middleware/authMiddleware');
+
 const {
+    getExercise,
     createExercise,
     deleteExercise,
     updateExercise
@@ -8,19 +11,17 @@ const {
 
 const router = express.Router();
 
-
-router.get('/', (req, res) => {
-    res.json({message: "HELLO WORLD"});
-});
+// GET request to get user exercise
+router.get('/', protect, getExercise);
 
 // Creating a model is asynchronous
 // This is to create an exercise object in mongodb
-router.post('/', createExercise);
+router.post('/', protect, createExercise);
 
 // Delete
-router.delete('/:id', deleteExercise);
+router.delete('/:id', protect, deleteExercise);
 
 // Update
-router.patch('/:id', updateExercise);
+router.put('/:id', protect, updateExercise);
 
 module.exports = router;

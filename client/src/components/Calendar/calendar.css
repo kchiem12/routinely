@@ -35,12 +35,12 @@
 }
 
 .today {
-    background-color: aqua;
+    background-color: #F6D100;
 }
 
 .selected {
     z-index: 50;
-    background-color: yellow;
+    background-color: #831F84;
 }
 
 .active {

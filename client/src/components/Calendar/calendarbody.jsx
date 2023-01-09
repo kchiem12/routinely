@@ -10,7 +10,7 @@ const CalendarBody = (props) => {
 
     let {displayMonth, currentMonth, daysInMonth, selectedDate, firstDayOfMonth, setDate, allDaysOfWeek, activeDays, update} = props;
 
-    // Gets the current day and current month
+    // Gets the current day
     let currentDay = parseInt(dt.toFormat("dd"));
 
     let blanks = [];
