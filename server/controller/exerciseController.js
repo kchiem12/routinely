@@ -12,7 +12,7 @@ const getExercise = asyncHandler(async(req, res) => {
 // Create a new exercise into database
 const createExercise = asyncHandler(async (req, res) => {
 
-    const {name, date, type, sets, reps, weights, time, pace} = req.body;
+    const {name, date, type, sets, reps, weights, hours, minutes, seconds, distance} = req.body;
 
     if (!name || !date || !type) {
         res.status(400);
@@ -27,8 +27,10 @@ const createExercise = asyncHandler(async (req, res) => {
         sets,
         reps,
         weights,
-        time,
-        pace
+        hours,
+        minutes,
+        seconds,
+        distance
     });
 
     res.status(200).json(exercise);

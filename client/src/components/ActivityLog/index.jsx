@@ -15,7 +15,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { auth, db } from "../../Firebase";
 import "./activitylog.css";
 import EditActivity from "./EditActivity";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+ 
 const ActivityLog = (props) => {
   // Destructuring props
   let { selectedDate, activityChange, setActivityChange, activeDays, setActiveDays } = props;
@@ -24,73 +26,70 @@ const ActivityLog = (props) => {
   const [listOfActivities, setListOfActivities] = useState([]);
   const [activityKeys, setActivityKeys] = useState(null);
 
-  useEffect(() => {
-    if (listOfActivities.length !== 0) {
-      setListOfActivities([]);
+  const {exercises} = useSelector((state) => state.exercise);
+  const {user} = useSelector((state) => state.auth);
+
+  // calculates running pace
+  const calcPace = (miles, hrs, mins, sec) => {
+    var totMinutes = hrs * 60 + mins + sec / 60,
+    pace = totMinutes / miles,
+    paceMin = Math.floor(pace),
+    paceSec = Math.round((pace - paceMin) *60);
+
+    if (paceSec < 10) {
+      paceSec = "0" + paceSec;
     }
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        retrieveData(user);
-      }
-    });
-  }, [selectedDate]);
 
+    return "" + paceMin + ":" + paceSec;
+  };
+
+  // retrieve and formats data from database
   const retrieveData = (user) => {
-    let queryDate = `${selectedDate.month}-${selectedDate.day}`;
+    let queryDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+    
+    let activitiesonDay = [];
 
-    // This variable will hold all the data of activity
-    let data = null;
+    for (let i = 0; i < exercises.length; i++) {
 
-    let ref = db.ref().child(`users/${user.uid}/activities/`);
+      let exercise = exercises[i];
 
-    // FIXED!!!!!!!
-    // Just needed to put everything inside of the once() curly braces
-    ref
-      .orderByChild("date")
-      .equalTo(queryDate)
-      .once("value", (snapshot) => {
-        data = snapshot.val();
+      // contains statistics for each set
+      var setLists = [];
+      
+      if (exercise.date !== queryDate) {
+        setListOfActivities([]);
+        continue;
+      }
 
-        if (data != null) {
-          let keys = Object.keys(data);
+      if (exercise.type !== 'run') {
 
-          setActivityKeys(keys);
-
-          for (let i = 0; i < keys.length; i++) {
-            let setLists = [];
-            let dataObject = data[keys[i]];
-
-            for (let j = 0; j < dataObject.sets; j++) {
-              setLists[j] = (
-                <p key={j}>
-                  Set {j + 1}: {dataObject.reps[j]} @ {dataObject.weights[j]} LB
-                </p>
-              );
-            }
-
-            activityList[i] = (
-              <React.Fragment key={i}>
-                <TableCell className="activity-log-cell">
-                  {dataObject.name}
-                </TableCell>
-                <TableCell className="activity-log-cell">
-                  {dataObject.type}
-                </TableCell>
-                <TableCell className="activity-log-cell">{setLists}</TableCell>
-              </React.Fragment>
-            );
-            setListOfActivities(activityList);
-            setActivityChange(!activityChange);
-          }
-
-
-        } else {
-          setListOfActivities([]);
-        }
-      });
-
-    // Array of all the activities logged by the user
-    var activityList = [];
+      for (let j = 0; j < exercise.sets; j++) {
+        setLists.push(
+          <p key={j}>
+            Set {j + 1}: {exercise.reps[j]} @ {exercise.weights[j]} LB
+          </p>
+        );
+      }
+      } else {
+        setLists.push(
+          <p key={0}>
+            {exercise.distance} miles @ {calcPace(exercise.distance, exercise.hours, exercise.minutes, exercise.seconds)} per mile <br /> {exercise.hours}:{exercise.minutes}:{exercise.seconds} total time (hrs:min:sec)
+          </p>
+        );
+      }
+      activitiesonDay.push(
+        <React.Fragment key={i}>
+          <TableCell className="activity-log-cell">
+            {exercise.name}
+          </TableCell>
+          <TableCell className="activity-log-cell">
+            {exercise.type}
+          </TableCell>
+          <TableCell className="activity-log-cell">{setLists}</TableCell>
+        </React.Fragment>);
+        setListOfActivities(activitiesonDay);
+        setActivityChange(!activityChange);
+    }
   };
 
 
@@ -142,6 +141,10 @@ const ActivityLog = (props) => {
       }
     })
   };
+
+  useEffect(() => {
+    retrieveData();
+  }, [user, exercises, selectedDate]);
 
   let theActivity = listOfActivities.map((activities, i) => (
     <TableRow key={i}>

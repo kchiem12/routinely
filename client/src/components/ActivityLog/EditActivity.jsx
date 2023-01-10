@@ -33,23 +33,6 @@ const EditActivity = (props) => {
   const user = auth.currentUser;
 
 
-  useEffect(() => {
-    let queryDate = `${selectedMonth}-${selectedDay}`;
-    let ref = db.ref().child(`users/${user.uid}/activities/`);
-  
-    ref.orderByChild("date").equalTo(queryDate).once("value", (snapshot) => {
-        let data = snapshot.val();
-        let activity = data[activitykeys];
-        setActivityName(activity.name);
-        setActivityType(activity.type);
-        setNumSets(activity.sets);
-        setNumReps(activity.reps);
-        setNumWeights(activity.weights);
-        setShowReps(activity.showReps);
-    })
-  }, []);
-
-
   const [open, setOpen] = useState(false);
   const [activityName, setActivityName] = useState("");
   const [activityType, setActivityType] = useState("");

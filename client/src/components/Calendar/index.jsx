@@ -75,7 +75,10 @@ const Calendar = (props) => {
     //Sets what month is displayed on the calendar
     const setMonth = (month) => {
         setDisplayMonth(month);
-        setSelectedDay({day: null, month: convertMonthToNum(month), year: displayYear});
+        setSelectedDay((prevState) => ({
+            ...prevState,
+            ["month"]:  convertMonthToNum(month)
+        }));
         toggleMonthDisplay();
     };
 

@@ -13,7 +13,7 @@ const exerciseSchema = new Schema({
         required: true
     },
     date: {
-        type: Date,
+        type: String,
         required: true
     },
     type: {
@@ -29,10 +29,16 @@ const exerciseSchema = new Schema({
     weights: {
         type: Array,
     },
-    time: {
+    hours: {
         type: Number,
     },
-    pace: {
+    minutes: {
+        type: Number
+    },
+    seconds: {
+        type: Number
+    },
+    distance: {
         type: Number,
     }
 }, {timestamps: true});

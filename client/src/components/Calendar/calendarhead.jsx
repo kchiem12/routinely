@@ -41,7 +41,7 @@ const CalendarHead = (props) => {
     let yearMenuItems = [];
     for (var i = 0; i < 40; i++) {
         yearMenuItems.push(
-            <MenuItem value={parseInt(dt.toFormat("yyyy")) - i}>{parseInt(dt.toFormat("yyyy")) - i}</MenuItem>
+            <MenuItem key={i} value={parseInt(dt.toFormat("yyyy")) - i}>{parseInt(dt.toFormat("yyyy")) - i}</MenuItem>
         );
     };
 

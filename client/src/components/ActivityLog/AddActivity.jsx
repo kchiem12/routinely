@@ -33,7 +33,9 @@ const AddActivity = (props) => {
       rep: -1,
       set: -1,
       time: -1,
-      distance: -1,
+      hours: -1,
+      minutes: -1,
+      seconds: -1
     },
   };
 
@@ -50,6 +52,8 @@ const AddActivity = (props) => {
   const [errorNumSets, setErrorNumSets] = useState(false);
   const [distance, setDistance] = useState(-1);
   const [time, setTime] = useState(-1);
+  const [amountOfReps, setAmountOfReps] = useState(new Array(10).fill(-1));
+  const [weightsEachRep, setWeightsEachRep] = useState(new Array(10).fill(-1));
 
   // gets data from the form
   const [formData, setFormData] = useState({
@@ -59,7 +63,9 @@ const AddActivity = (props) => {
     sets: -1,
     reps: [],
     weights: [],
-    time: -1,
+    hours: -1,
+    minutes: -1,
+    seconds: -1,
     distance: -1
   });
 
@@ -72,7 +78,9 @@ const AddActivity = (props) => {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.name]: e.target.value,
-        ["time"]: -1,
+        ["hours"]: -1,
+        ["minutes"]: -1,
+        ["seconds"]: -1,
         ["distance"]: -1,
       }))
     } else {
@@ -83,7 +91,7 @@ const AddActivity = (props) => {
         [e.target.name]: e.target.value,
         ["sets"]: -1,
         ["reps"]: [],
-        ["weights"]: []
+        ["weights"]: [],
       }));
     }
   };
@@ -96,28 +104,27 @@ const AddActivity = (props) => {
     }));
   };
 
-  let amountOfReps = [];
-  let weightsEachRep = [];
-
   // To update the sets array
   const updateAmountOfReps = (e) => {
-    amountOfReps[parseInt(e.target.id)] = +parseInt(e.target.value);
+    let aoReps = [...amountOfReps];
+    aoReps[parseInt(e.target.id)] = parseInt(e.target.value);
+    setAmountOfReps(aoReps);
     setFormData((prevState) => ({
       ...prevState,
-      ["reps"]: amountOfReps
+      ["reps"]: aoReps.slice(0, formData.sets)
     }));
 
     console.log(amountOfReps);
-    console.log(formData.reps);
-    console.log([1,2,3,4]);
   };
 
   // To update the weights array
   const updateWeightsEachRep = (e) => {
-    weightsEachRep[parseInt(e.target.id)] = parseInt(e.target.value);
+    let weightsRep = [...weightsEachRep];
+    weightsRep[parseInt(e.target.id)] = parseInt(e.target.value);
+    setWeightsEachRep(weightsRep);
     setFormData((prevState) => ({
       ...prevState,
-      ["weights"]: weightsEachRep
+      ["weights"]: weightsRep.slice(0, formData.sets)
     }));
   };
 
@@ -159,25 +166,9 @@ const AddActivity = (props) => {
   // Function to add the activity to the database and add it to the log
   const handleSubmit = (e) => {
     e.preventDefault(); 
-
+    setOpen(false);
     dispatch(createExercise(formData));
   };
-
-  const {exercises, isLoading, isError, isSuccess, message} = useSelector((state) => state.exercise);
-
-  // when a request is made
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    } else {
-      setOpen(false);
-    }
-
-    dispatch(reset());
-
-
-  }, [exercises, isError, isSuccess, message, dispatch])
-
 
   return (
     <div>
@@ -271,17 +262,41 @@ const AddActivity = (props) => {
               variant="standard"
               onChange={handleChange}
             ></TextField>
-            <TextField
-              autoFocus
-              margin="normal"
-              label="Time (min)"
-              type="number"
-              name="time"
-              required
-              fullWidth
-              variant="standard"
-              onChange={handleChange}
-            ></TextField>
+            <div className="time-input">
+              <TextField
+                autoFocus
+                margin="normal"
+                label="Hours"
+                type="number"
+                name="hours"
+                required
+                variant="standard"
+                sx={{ width: 0.15 }}
+                onChange={handleChange}
+              ></TextField>
+              <TextField
+                autoFocus
+                margin="normal"
+                label="Minutes"
+                type="number"
+                name="minutes"
+                required
+                variant="standard"
+                sx={{ width: 0.15 }}
+                onChange={handleChange}
+              ></TextField>
+              <TextField
+                autoFocus
+                margin="normal"
+                label="Seconds"
+                type="number"
+                name="seconds"
+                required
+                variant="standard"
+                sx={{ width: 0.15 }}
+                onChange={handleChange}
+              ></TextField>
+            </div>
           </div>
           ) : null
           }

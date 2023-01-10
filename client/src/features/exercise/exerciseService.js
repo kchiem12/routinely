@@ -3,10 +3,18 @@ import axios from 'axios';
 const API_URL = '/api/exercise/';
 
 // Get all exercises
-const getExercises = async (userData) => {
+const getExercises = async (token) => {
 
-    const response = await axios.get(API_URL, )
+    // Create the token header to pass into POST request
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
 
+    const response = await axios.get(API_URL, config);
+
+    return response.data;
 };
 
 // Create an exercise
