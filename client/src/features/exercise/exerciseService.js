@@ -32,15 +32,35 @@ const createExercise = async (exerciseData, token) => {
     return response.data;
 };
 
-const updateExercise = async (exerciseData) => {
-    const response = await axios.put()
-};
+const updateExercise = async (exerciseData, exerciseID, token) => {
 
-const deleteExercise = async (exerciseID) => {
-    const response = await axios.delete(API_URL + 'exerciseID/');
+    // Create the token header to pass into POST request
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    
+    const response = await axios.put(API_URL + `${exerciseID}/`, exerciseData, config);
 
     return response.data;
 };
+
+const deleteExercise = async (exerciseID, token) => {
+    
+    // Create the token header to pass into POST request
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+
+    const response = await axios.delete(API_URL + `${exerciseID}/`, config);
+
+    return response.data;
+};
+
+
 
 const exerciseService = {
     getExercises,

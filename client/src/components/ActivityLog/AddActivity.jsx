@@ -113,8 +113,6 @@ const AddActivity = (props) => {
       ...prevState,
       ["reps"]: aoReps.slice(0, formData.sets)
     }));
-
-    console.log(amountOfReps);
   };
 
   // To update the weights array
@@ -160,6 +158,13 @@ const AddActivity = (props) => {
       </div>
     );
   }
+
+  useEffect(() => {
+    setFormData((prevState) => ({
+      ...prevState,
+      ["date"]: selectedDate.year.toString() + '-' + selectedDate.month.toString() + '-' + selectedDate.day.toString()
+    }));
+  }, [selectedDate]);
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 

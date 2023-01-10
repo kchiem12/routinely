@@ -17,6 +17,7 @@ import "./activitylog.css";
 import EditActivity from "./EditActivity";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import { deleteExercise } from '../../features/exercise/exerciseSlice';
  
 const ActivityLog = (props) => {
   // Destructuring props
@@ -24,10 +25,11 @@ const ActivityLog = (props) => {
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
   const [listOfActivities, setListOfActivities] = useState([]);
-  const [activityKeys, setActivityKeys] = useState(null);
+  const [correspondingExercises, setCorrespondingExercises] = useState([]);
 
   const {exercises} = useSelector((state) => state.exercise);
   const {user} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   // calculates running pace
   const calcPace = (miles, hrs, mins, sec) => {
@@ -46,8 +48,10 @@ const ActivityLog = (props) => {
   // retrieve and formats data from database
   const retrieveData = (user) => {
     let queryDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+    console.log(selectedDate);
     
     let activitiesonDay = [];
+    let corrExercises = [];
 
     for (let i = 0; i < exercises.length; i++) {
 
@@ -60,6 +64,8 @@ const ActivityLog = (props) => {
         setListOfActivities([]);
         continue;
       }
+
+      corrExercises.push(exercise);
 
       if (exercise.type !== 'run') {
 
@@ -87,51 +93,14 @@ const ActivityLog = (props) => {
           </TableCell>
           <TableCell className="activity-log-cell">{setLists}</TableCell>
         </React.Fragment>);
-        setListOfActivities(activitiesonDay);
-        setActivityChange(!activityChange);
     }
+    setListOfActivities(activitiesonDay);
+    setCorrespondingExercises(corrExercises);
+    setActivityChange(!activityChange);
   };
 
 
   // Deletes activity from Firebase Database
-  const deleteActivity = (i) => {
-    auth.onAuthStateChanged((user) => {
-      // Gets the specific activity key
-      if (activityKeys != null) {
-        const activityKey = activityKeys[i];
-
-        const emptyData = {
-          date: null,
-          name: null,
-          type: null,
-          sets: null,
-          reps: null,
-          weights: null,
-          showReps: null,
-          time: null,
-        };
-
-        let ref = db.ref().child(`users/${user.uid}/activities/${activityKey}`);
-        ref.set(emptyData);
-
-        retrieveData(user);
-
-        let theDate = '(' + selectedDate['month'] + ', ' + selectedDate['day'] + ')';
-        let temp = activeDays;
-        temp.pop(theDate);
-        setActiveDays(temp);
-
-        setActivityChange(!activityChange);
-
-      }
-    });
-  };
-
-
-  // Configure different pop-up if user wants to store cardio exercises
-  const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
-
-  const exercisesWithDistance = ["run", "cardio"];
 
   // Gets the exercise data from database
   const addActivity = (theActivity) => {
@@ -144,20 +113,19 @@ const ActivityLog = (props) => {
 
   useEffect(() => {
     retrieveData();
-  }, [user, exercises, selectedDate]);
+    console.log("hello");
+  }, [user, exercises, selectedDate, dispatch]);
 
   let theActivity = listOfActivities.map((activities, i) => (
     <TableRow key={i}>
       {activities}
       <TableCell className="activity-log-cell">
         {<EditActivity 
-          activitykeys= {activityKeys}
-          activityindex = {i}
-          selectedMonth={selectedDate.month}
-          selectedDay={selectedDate.day}
+          exercise = {correspondingExercises[i]}
+          selectedDate = {selectedDate}
           addActivity={addActivity}
         />}
-        {<DeleteIcon className="icon" onClick={(e) => deleteActivity(i)}
+        {<DeleteIcon className="icon" onClick={() => dispatch(deleteExercise(correspondingExercises[i]._id))}
         />}
       </TableCell>
     </TableRow>
