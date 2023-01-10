@@ -1,4 +1,4 @@
-import React from "react";
+import {React} from "react";
 import withRouter from "../components/withRouter.js";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Topbar from "../components/Topbar/Topbar";
@@ -7,37 +7,30 @@ import './dashboard.css';
 import {AuthorizedUserCont, withAuthentication} from "../components/Session";
 import AccessDenied from "./AccessDenied.jsx";
 import { auth } from "../Firebase.js";
+import { useNavigate } from "react-router-dom";
+import {useSelector} from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const user = auth.currentUser;
 
 const Dashboard = () => {
 
 
-  // TODO: Overhaul this entire mess of authentication and storing session status
-  const userLocal = JSON.parse(localStorage.getItem('user'));
-
-  // This is to store the fact that the user is logged into the site
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      localStorage.setItem('user', true);
-    } else {
-      localStorage.removeItem('user');
-    }
-  })
+  const {user} = useSelector((state) => state.auth);
 
   return (
     <>
-    {
-      userLocal ? (
+    {user ? (
         <>
       <Topbar />
       <div className="sidemenu-container">
         <Sidebar />
         <Overview authUser={user}/>
       </div>
+      <ToastContainer></ToastContainer>
       </>
-      ) : (<AccessDenied />)
-}
+      ) : (<AccessDenied />)}
 </>
   );
 };

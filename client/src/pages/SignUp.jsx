@@ -14,6 +14,10 @@ import withRouter from '../components/withRouter';
 import {auth, db} from '../Firebase';
 import theme from '../Theme/theme';
 import { ThemeProvider } from "@mui/material/styles";
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-toastify';
+import { register, reset } from '../features/auth/authSlice';
 
 const SignUp = (props) => {
 
@@ -28,52 +32,71 @@ const SignUp = (props) => {
       last_login: null
     };
 
-  const { location, navigate, params} = props.router;
+    const [registerError, setRegisterError] = React.useState('');
+
+  // const { location, navigate, params} = props.router;
     //Set state of the user
-    const [user, setUser] = React.useState(defaultUser);
+    // const [user, setUser] = React.useState(defaultUser);
 
+  // State that contains the data from the form
+  const [formData, setFormData] = React.useState({
+    firstName: '',
+    lastName: '',
+    password: '',
+    confirmPassword: '',
+    email: '',
+  });
 
-  // For when button is pressed
-  const handleChange = e => {
-    const {name, value} = e.target;
-    setUser({...user, [name]: value});
-  };
+  const {firstName, lastName, password, passwordConfirm, email} = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const {user, isLoading, isError, isSuccess, message} = useSelector((state) => state.auth);
+  
+
+  React.useEffect(() => {
+    if (isError) {
+      setRegisterError(message);
+    }
+
+    if (isSuccess || user) {
+      navigate('/dashboard');
+    }
+
+    dispatch(reset());
+
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  // Handle changes when textfield is typed into
+  const handleChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }
 
   
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    if (password !== passwordConfirm) {
+      setRegisterError("Passwords do not match");
+      return
+    } else {
+      const userData = {
+        firstName,
+        lastName,
+        password,
+        email
+      };
 
-    //handles authentication, making sure that email and password is valid
-    auth.createUserWithEmailAndPassword(user.email, user.password).then(authUser => {
-        
-        //declares the current user
-        var theUser = auth.currentUser;
-
-        //add to database
-        var database_ref = db.ref();
-        
-        // Initializes the data that is to be stored into database
-        var userData = {
-            username: user.username,
-            email: user.email,
-            activities: 'Not created',
-            last_login: Date.now()
-        }
-
-        database_ref.child('users/' + theUser.uid).set(userData);
-
-        //wipes the user in file
-        setUser(defaultUser);
-
-        navigate('/dashboard');
-    }).catch(err => {
-        setUser({...user, error: err.message});
-    });
+      dispatch(register(userData));
+    }
   };
 
   // Initalize variable to check if the email or password input is valid
-  const isValid = user.email === '' || user.password ==='';
+  const isValid = firstName === '' || lastName ==='' || email ==='' || password === '' || passwordConfirm === '' ;
 
   return (
 
@@ -108,10 +131,21 @@ const SignUp = (props) => {
                 margin="normal"
                 required
                 fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
+                id="first-name"
+                label="First Name"
+                name="firstName"
+                autoComplete="first-name"
+                autoFocus
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="last-name"
+                label="Last Name"
+                name="lastName"
+                autoComplete="last-name"
                 autoFocus
                 onChange={handleChange}
               />
@@ -138,10 +172,21 @@ const SignUp = (props) => {
                 autoComplete="current-password"
                 onChange={handleChange}
               />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="passwordConfirm"
+                label="Confirm Password"
+                type="password"
+                id="password-confirm"
+                autoComplete="confirm-password"
+                onChange={handleChange}
+              />
 
               {/* Throws an error here if there is an error */}
               <Typography className='err-signup'>
-                  {user.error ? user.error : ''}
+                  {registerError}
               </Typography>
 
               <Button
@@ -169,4 +214,4 @@ const SignUp = (props) => {
   );
 }
 
-export default withRouter(SignUp);
+export default SignUp;

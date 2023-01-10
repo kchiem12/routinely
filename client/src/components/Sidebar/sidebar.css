@@ -8,7 +8,6 @@
 
 .side-wrapper {
     padding: 20px;
-    color: #A91079;
 }
 
 .title-side {
@@ -29,7 +28,9 @@
     gap: 10px;
     margin-bottom: 10px;
     border-radius: 10px;
+    text-decoration: none;
     font-size: 18px;
+    color: #A91079;
 }
 
 .sidebar-list-item.active, .sidebar-list-item:hover {

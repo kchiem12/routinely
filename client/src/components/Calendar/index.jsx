@@ -17,14 +17,15 @@ const Calendar = (props) => {
 
     const defaultDay = {
         day: parseInt(dt.toFormat("d")),
-        month: parseInt(dt.toFormat("MM"))
+        month: parseInt(dt.toFormat("MM")),
+        year: parseInt(dt.toFormat('yyyy'))
     }
 
     //Hooks
     const[showMonthTable, setShowMonthTable] = useState(false);
     const [showYearTable, setShowYearTable] = useState(false);
     const [displayMonth, setDisplayMonth] = useState(dt.toFormat("MMMM"));
-    const [displayYear, setDisplayYear] = useState(dt.toFormat("yyyy"));
+    const [displayYear, setDisplayYear] = useState(parseInt(dt.toFormat("yyyy")));
     const [selectedDay, setSelectedDay] = useState(defaultDay);
     const [activityChange, setActivityChange] = useState(false);
 
@@ -61,7 +62,7 @@ const Calendar = (props) => {
 
     //Sets the currently selected day by updating the day portion of the JSON
     const setTheDay = (day) => {
-        setSelectedDay({day, month: convertMonthToNum(displayMonth)});
+        setSelectedDay({day, month: convertMonthToNum(displayMonth), year: displayYear});
     }
 
 
@@ -74,9 +75,17 @@ const Calendar = (props) => {
     //Sets what month is displayed on the calendar
     const setMonth = (month) => {
         setDisplayMonth(month);
-        setSelectedDay({day: null, month: convertMonthToNum(month)});
+        setSelectedDay({day: null, month: convertMonthToNum(month), year: displayYear});
         toggleMonthDisplay();
     };
+
+    const setTheYear = (year) => {
+        setDisplayYear(year);
+        setSelectedDay((prevState) => ({
+            ...prevState,
+            ["year"]: year,
+        }));
+    }
 
     // These arrays will help with enumerating the months and weekday
     const allMonths = [
@@ -137,7 +146,7 @@ const Calendar = (props) => {
                                 showMonthTable = {showMonthTable}
                                 currentYear={parseInt(displayYear)}
                                 setMonth = {setMonth}
-                                setYear = {setDisplayYear}
+                                setYear = {setTheYear}
                             />
                             <CalendarBody
                                 displayMonth = {convertMonthToNum(displayMonth)}

@@ -2,3 +2,9 @@
     width: 100%;
     background-color: #2E0249;
 }
+
+.calendar-title {
+    margin-left: 10px;
+    margin-top: 20px;
+    color: #A91079;
+}

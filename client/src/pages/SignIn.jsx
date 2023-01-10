@@ -14,7 +14,10 @@ import withRouter from '../components/withRouter';
 import PasswordForget from '../components/PasswordForget';
 import { ThemeProvider } from "@mui/material/styles";
 import theme from '../Theme/theme';
-import { auth, db } from '../Firebase';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { login, reset } from '../features/auth/authSlice';
+
 
 function SignIn(props) {
 
@@ -29,47 +32,59 @@ function SignIn(props) {
     };
     
   //Set state of the user
-  const [user, setUser] = React.useState(defaultUser);
+  // const [user, setUser] = React.useState(defaultUser);
   //Uses history to programatically change routes
-  const { location, navigate, params} = props.router;
+  // const { location, navigate, params} = props.router;
+
+  const [loginError, setLoginError] = React.useState('');
+
+
+   // State that contains the data from the form
+   const [formData, setFormData] = React.useState({
+    password: '',
+    email: '',
+  });
+
+  const {password, email} = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const {user, isLoading, isError, isSuccess, message} = useSelector((state) => state.auth);
+
+  React.useEffect(() => {
+    if (isError) {
+      setLoginError(message);
+    }
+
+    if (isSuccess || user) {
+      navigate('/dashboard');
+    }
+
+    dispatch(reset());
+
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
 
   // Used to handle updates in the form
-  const handleChange = e => {
-    const {name, value} = e.target;
-    setUser({...user, [name]: value});
-  };
+  const handleChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }
 
-  const isValid = user.email === '' || user.password ==='';
+  const isValid = email === '' || password ==='';
 
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    //Authenticates login
-    auth.signInWithEmailAndPassword(user.email, user.password).then(() => {
+    const userData = {
+      email,
+      password
+    };
 
-            //declares the current user
-            var theUser = auth.currentUser;
-
-            //add to database
-            var database_ref = db.ref();
-            
-            var userData = {
-                last_login: Date.now()
-            };
-    
-            database_ref.child('users/' + theUser.uid).update(userData);
-    
-            //wipes the user in file
-            setUser(defaultUser);
-
-            //Switches page to dashboard
-            navigate('/dashboard');
-            
-
-    }).catch(err => {
-      setUser({...user, error: err.message});
-    });
+    dispatch(login(userData));
   };
 
 
@@ -119,7 +134,7 @@ function SignIn(props) {
             />
 
               <Typography className='error'>
-                {user.error ? user.error : ''}
+                {loginError}
             </Typography>
 
             <Button

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Fragment } from "react";
 import { Button } from "@mui/material";
 import {
@@ -17,11 +17,12 @@ import {
   Typography
 } from "@mui/material";
 import { DateTime } from "luxon";
-import { auth, db } from "../../Firebase";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { createExercise, reset } from '../../features/exercise/exerciseSlice';
+import { toast } from 'react-toastify';
 
 const AddActivity = (props) => {
-  const { addActivity, selectedMonth, selectedDay } = props;
+  const { addActivity, selectedDate } = props;
 
   // These are the values we want for our activity
   const defaultActivity = {
@@ -36,12 +37,13 @@ const AddActivity = (props) => {
     },
   };
 
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [activityName, setActivityName] = useState("");
   const [activityType, setActivityType] = useState("");
   const [showReps, setShowReps] = useState(false);
   const [showDuration, setShowDuration] = useState(false);
-  const [numSets, setNumSets] = useState(0);
   const [theActivity, setTheActivity] = useState(defaultActivity);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -49,36 +51,79 @@ const AddActivity = (props) => {
   const [distance, setDistance] = useState(-1);
   const [time, setTime] = useState(-1);
 
-  const user = auth.currentUser;
+  // gets data from the form
+  const [formData, setFormData] = useState({
+    name: '',
+    date: selectedDate.year.toString() + '-' + selectedDate.month.toString() + '-' + selectedDate.day.toString(),
+    type: '',
+    sets: -1,
+    reps: [],
+    weights: [],
+    time: -1,
+    distance: -1
+  });
 
+  // Changes certain values depending on the activity type chosen
   const updateActivityType = (e) => {
     setActivityType(e.target.value);
     if (exercisesWithRepsAndSets.includes(e.target.value)) {
       setShowReps(true);
       setShowDuration(false);
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+        ["time"]: -1,
+        ["distance"]: -1,
+      }))
     } else {
       setShowReps(false);
       setShowDuration(true);
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+        ["sets"]: -1,
+        ["reps"]: [],
+        ["weights"]: []
+      }));
     }
+  };
+
+  // Handles changes in the textfield
+  const handleChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }));
   };
 
   let amountOfReps = [];
   let weightsEachRep = [];
-  let setReps = [];
 
   // To update the sets array
-  const updateAmountOfReps = (e, amountReps = amountOfReps) => {
-    amountReps[parseInt(e.target.id)] = parseInt(e.target.value);
+  const updateAmountOfReps = (e) => {
+    amountOfReps[parseInt(e.target.id)] = +parseInt(e.target.value);
+    setFormData((prevState) => ({
+      ...prevState,
+      ["reps"]: amountOfReps
+    }));
+
+    console.log(amountOfReps);
+    console.log(formData.reps);
+    console.log([1,2,3,4]);
   };
 
   // To update the weights array
   const updateWeightsEachRep = (e) => {
     weightsEachRep[parseInt(e.target.id)] = parseInt(e.target.value);
+    setFormData((prevState) => ({
+      ...prevState,
+      ["weights"]: weightsEachRep
+    }));
   };
 
   let reps = [];
 
-  for (let i = 0; i < numSets; i++) {
+  for (let i = 0; i < formData.sets; i++) {
     reps.push(
       <div key={i} className="sets">
         <InputLabel id={(i+1).toString()}>{`Set ${(i+1).toString()}`}</InputLabel>
@@ -109,64 +154,30 @@ const AddActivity = (props) => {
     );
   }
 
-  const updateSets = (e) => {
-    setNumSets(e.target.value);
-    setSelected(e.target.value);
-  };
-
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
-  const exercisesWithDistance = ["run"];
-
   // Function to add the activity to the database and add it to the log
-  const handleActivity = (e, sReps= setReps, aoReps = amountOfReps, woRep = weightsEachRep) => {
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
 
-    e.preventDefault();
-
-    setErrorNumSets(!selected);
-
-    if (selected != null) {
-
-    setOpen(false);
-
-    let amtReps = [];
-
-    if (showReps) {
-      for (let i = 0; i < reps.length; i++) {
-        amtReps[i] =
-            <p key={i}>
-                Set {i+1}: {amountOfReps[i]} @ {weightsEachRep[i]} LB
-            </p>
-      }
-      // Initialize an activity object to add
-      let activity = {
-        date: `${selectedMonth}-${selectedDay}`,
-        name: activityName,
-        type: activityType,
-        sets: amtReps.length,
-        amount: amtReps,
-        showReps: showReps,
-      };
-
-      // To add the activity into the log
-
-      activity = {
-        date: `${selectedMonth}-${selectedDay}`,
-        name: activityName,
-        type: activityType,
-        sets: amtReps.length,
-        reps: amountOfReps,
-        weights: weightsEachRep,
-        showReps: showReps,
-        time: DateTime.now().toUnixInteger()
-      }
-      let ref = db.ref().child(`users/${user.uid}/activities`);
-      ref.push(activity);
-
-      addActivity(activity);
-    }
-  }
+    dispatch(createExercise(formData));
   };
+
+  const {exercises, isLoading, isError, isSuccess, message} = useSelector((state) => state.exercise);
+
+  // when a request is made
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    } else {
+      setOpen(false);
+    }
+
+    dispatch(reset());
+
+
+  }, [exercises, isError, isSuccess, message, dispatch])
+
 
   return (
     <div>
@@ -174,7 +185,7 @@ const AddActivity = (props) => {
         Add Activity
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-      <form onSubmit={handleActivity}>
+      <form onSubmit={handleSubmit}>
         <DialogTitle>Add An Activity</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -183,16 +194,14 @@ const AddActivity = (props) => {
           <TextField
             autoFocus
             margin="normal"
+            name="name"
             id="name"
             label="Activity Name"
             type="text"
             fullWidth
             variant="standard"
             required
-            onChange={(e) => {
-              setActivityName(e.target.value.replace(/^\s*[\r\n]/gm, ""));
-              console.log(activityName);
-            }}
+            onChange={handleChange}
             multiline
           ></TextField>
 
@@ -202,6 +211,7 @@ const AddActivity = (props) => {
               labelId="type-activity"
               value={activityType}
               defaultValue="Select"
+              name="type"
               label="Type"
               sx={{ width: "300px" }}
               required
@@ -221,10 +231,11 @@ const AddActivity = (props) => {
                 <Select
                   labelId="amount-sets"
                   label="Sets"
-                  value={numSets}
+                  name="sets"
+                  value={formData.sets}
                   sx={{ width: "100px"}}
                   required
-                  onChange={updateSets}
+                  onChange={handleChange}
                 >
                   <MenuItem value={1}>1</MenuItem>
                   <MenuItem value={2}>2</MenuItem>
@@ -253,21 +264,23 @@ const AddActivity = (props) => {
               autoFocus
               margin="normal"
               label="Distance (miles)"
+              name="distance"
               type="number"
               fullWidth
               required
               variant="standard"
-              onChange={(e) => setDistance(e.target.value)}
+              onChange={handleChange}
             ></TextField>
             <TextField
               autoFocus
               margin="normal"
               label="Time (min)"
               type="number"
+              name="time"
               required
               fullWidth
               variant="standard"
-              onChange={(e) => setTime(e.target.value)}
+              onChange={handleChange}
             ></TextField>
           </div>
           ) : null

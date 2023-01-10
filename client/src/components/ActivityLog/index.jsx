@@ -171,8 +171,7 @@ const ActivityLog = (props) => {
             <TableCell colSpan={1} align='center'>
               <AddActivity
                 addActivity={addActivity}
-                selectedMonth={selectedDate.month}
-                selectedDay={selectedDate.day}
+                selectedDate={selectedDate}
               />
             </TableCell>
           </TableRow>
