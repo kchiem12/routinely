@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { auth } from '../../Firebase';
 import { Link } from '@mui/material';
 import { Button } from '@mui/material';
 import { TextField } from '@mui/material';
@@ -36,16 +35,7 @@ const PasswordForget = () => {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        //Send to firebase
-        auth.sendPasswordResetEmail(email).then(() => {
-            handleClickClose();
-            setEmail('');
-            alert('Email has been sent!')
-
-
-        }).catch(err => {
-            setError(err.message);
-        });
+        // TODO: set up lost password process w/o firebase
     };
 
     return ( 
