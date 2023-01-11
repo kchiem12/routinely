@@ -108,7 +108,6 @@ export const exerciseSlice = createSlice({
         .addCase(updateExercise.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isSuccess= true;
-            console.log(action.payload);
             // edit only the exercise with the same ID
             for (var i = 0; i < state.exercises.length; i++) {
                 if (state.exercises[i]._id === action.payload._id) {
@@ -120,7 +119,6 @@ export const exerciseSlice = createSlice({
         .addCase(updateExercise.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            console.log(action.payload);
             state.message = action.payload;
         })
     }
