@@ -13,45 +13,20 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  FormHelperText,
   Typography
 } from "@mui/material";
-import { DateTime } from "luxon";
-import { useSelector, useDispatch } from 'react-redux';
-import { createExercise, reset } from '../../features/exercise/exerciseSlice';
-import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { createExercise } from '../../features/exercise/exerciseSlice';
 
 const AddActivity = (props) => {
-  const { addActivity, selectedDate } = props;
-
-  // These are the values we want for our activity
-  const defaultActivity = {
-    date: "",
-    name: "",
-    type: "",
-    amount: {
-      rep: -1,
-      set: -1,
-      time: -1,
-      hours: -1,
-      minutes: -1,
-      seconds: -1
-    },
-  };
+  const { selectedDate } = props;
 
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
-  const [activityName, setActivityName] = useState("");
   const [activityType, setActivityType] = useState("");
   const [showReps, setShowReps] = useState(false);
   const [showDuration, setShowDuration] = useState(false);
-  const [theActivity, setTheActivity] = useState(defaultActivity);
-  const [error, setError] = useState(null);
-  const [selected, setSelected] = useState(null);
-  const [errorNumSets, setErrorNumSets] = useState(false);
-  const [distance, setDistance] = useState(-1);
-  const [time, setTime] = useState(-1);
   const [amountOfReps, setAmountOfReps] = useState(new Array(10).fill(-1));
   const [weightsEachRep, setWeightsEachRep] = useState(new Array(10).fill(-1));
 
@@ -78,10 +53,10 @@ const AddActivity = (props) => {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.name]: e.target.value,
-        ["hours"]: -1,
-        ["minutes"]: -1,
-        ["seconds"]: -1,
-        ["distance"]: -1,
+        "hours": -1,
+        "minutes": -1,
+        "seconds": -1,
+        "distance": -1,
       }))
     } else {
       setShowReps(false);
@@ -89,9 +64,9 @@ const AddActivity = (props) => {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.name]: e.target.value,
-        ["sets"]: -1,
-        ["reps"]: [],
-        ["weights"]: [],
+        "sets": -1,
+        "reps": [],
+        "weights": [],
       }));
     }
   };
@@ -111,7 +86,7 @@ const AddActivity = (props) => {
     setAmountOfReps(aoReps);
     setFormData((prevState) => ({
       ...prevState,
-      ["reps"]: aoReps.slice(0, formData.sets)
+      "reps": aoReps.slice(0, formData.sets)
     }));
   };
 
@@ -122,7 +97,7 @@ const AddActivity = (props) => {
     setWeightsEachRep(weightsRep);
     setFormData((prevState) => ({
       ...prevState,
-      ["weights"]: weightsRep.slice(0, formData.sets)
+      "weights": weightsRep.slice(0, formData.sets)
     }));
   };
 
@@ -162,7 +137,7 @@ const AddActivity = (props) => {
   useEffect(() => {
     setFormData((prevState) => ({
       ...prevState,
-      ["date"]: selectedDate.year.toString() + '-' + selectedDate.month.toString() + '-' + selectedDate.day.toString()
+      "date": selectedDate.year.toString() + '-' + selectedDate.month.toString() + '-' + selectedDate.day.toString()
     }));
   }, [selectedDate]);
 
@@ -244,7 +219,6 @@ const AddActivity = (props) => {
                   <MenuItem value={9}>9</MenuItem>
                   <MenuItem value={10}>10</MenuItem>
                 </Select>
-                {errorNumSets && <FormHelperText>Please select number of sets you did</FormHelperText>}
               </FormControl>
               {reps}
             </>

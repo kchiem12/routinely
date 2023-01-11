@@ -3,33 +3,19 @@ import './sidebar.css';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { auth } from "../../Firebase";
 import { Link, useNavigate } from "react-router-dom";
-import withRouter from "../withRouter.js";
-import {useSelector, useDispatch } from 'react-redux';
+import {useDispatch } from 'react-redux';
 import {logout, reset} from '../../features/auth/authSlice';
 
 const Sidebar = (props) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {user} = useSelector((state) => state.auth);
-
-  // const { location, navigate, params} = props.router;
 
   const signOut = async () => {
     await dispatch(logout());
     await dispatch(reset());
     navigate('/');
-  }
-
-  const navWorkoutList = () => {
-    navigate('/dashboard/workoutlist');
-  }
-
-  const navOverview = () => {
-    navigate('/dashboard');
-    console.log('Pressed \'OVERVIEW\'');
   }
 
   return (

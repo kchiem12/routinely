@@ -9,34 +9,15 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../components/Copyright';
-import { Link } from 'react-router-dom';
-import withRouter from '../components/withRouter';
-import {auth, db} from '../Firebase';
 import theme from '../Theme/theme';
 import { ThemeProvider } from "@mui/material/styles";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-toastify';
+import { useNavigate, Link } from 'react-router-dom';
 import { register, reset } from '../features/auth/authSlice';
 
 const SignUp = (props) => {
 
-    //Generates a new user object
-    const defaultUser = {
-      id: null,
-      username: '',
-      email: '',
-      password: '',
-      error: null,
-      auth: null,
-      last_login: null
-    };
-
-    const [registerError, setRegisterError] = React.useState('');
-
-  // const { location, navigate, params} = props.router;
-    //Set state of the user
-    // const [user, setUser] = React.useState(defaultUser);
+  const [registerError, setRegisterError] = React.useState('');
 
   // State that contains the data from the form
   const [formData, setFormData] = React.useState({
@@ -51,10 +32,8 @@ const SignUp = (props) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const {user, isLoading, isError, isSuccess, message} = useSelector((state) => state.auth);
+  const {user, isError, isSuccess, message} = useSelector((state) => state.auth);
   
-
   React.useEffect(() => {
     if (isError) {
       setRegisterError(message);
@@ -65,7 +44,6 @@ const SignUp = (props) => {
     }
 
     dispatch(reset());
-
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   // Handle changes when textfield is typed into
@@ -76,7 +54,6 @@ const SignUp = (props) => {
     }));
   }
 
-  
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -97,10 +74,8 @@ const SignUp = (props) => {
 
   // Initalize variable to check if the email or password input is valid
   const isValid = firstName === '' || lastName ==='' || email ==='' || password === '' || passwordConfirm === '' ;
-
   return (
-
-<ThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
 
         {/* Used to normalize CSS */}

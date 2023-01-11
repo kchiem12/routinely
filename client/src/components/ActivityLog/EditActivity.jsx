@@ -13,43 +13,30 @@ import {
   InputLabel,
   FormControl,
   Button,
-  FormHelperText,
   Typography
 } from "@mui/material";
-import { auth, db } from "../../Firebase";
-import { DateTime } from "luxon";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateExercise } from '../../features/exercise/exerciseSlice'
 
 const EditActivity = (props) => {
+  
   const {
     exercise,
     selectedDate,
-    addActivity,
   } = props;
 
   const exercisesWithRepsAndSets = ["upper-body", "back", "lowerbody"];
 
   const dispatch = useDispatch();
-  const {isError, message} = useSelector((state) => state.exercise);
 
 
   const [open, setOpen] = useState(false);
-  const [activityName, setActivityName] = useState("");
-  const [activityType, setActivityType] = useState("");
   const [showReps, setShowReps] = useState(exercisesWithRepsAndSets.includes(exercise.type) ? true : false);
   const [showDuration, setShowDuration] = useState(exercisesWithRepsAndSets.includes(exercise.type) ? false : true);
-  const [numSets, setNumSets] = useState(0);
-  const [error, setError] = useState(null);
-  const [selected, setSelected] = useState(true);
-  const [errorNumSets, setErrorNumSets] = useState(false);
-  const [numReps, setNumReps] = useState(null);
-  const [numWeights, setNumWeights] = useState(null);
   const [amountOfReps, setAmountOfReps] = useState(exercise.reps);
   const [weightsEachRep, setWeightsEachRep] = useState(exercise.weights);
 
-  // gets data from the form
+  // Loads in form data using the exercise object passed into component
   const [formData, setFormData] = useState({
     name: exercise.name,
     date: selectedDate.year.toString() + '-' + selectedDate.month.toString() + '-' + selectedDate.day.toString(),
@@ -65,17 +52,16 @@ const EditActivity = (props) => {
 
   // Changes certain values depending on the activity type chosen
   const updateActivityType = (e) => {
-    setActivityType(e.target.value);
     if (exercisesWithRepsAndSets.includes(e.target.value)) {
       setShowReps(true);
       setShowDuration(false);
       setFormData((prevState) => ({
         ...prevState,
         [e.target.name]: e.target.value,
-        ["hours"]: -1,
-        ["minutes"]: -1,
-        ["seconds"]: -1,
-        ["distance"]: -1,
+        "hours": -1,
+        "minutes": -1,
+        "seconds": -1,
+        "distance": -1,
       }))
     } else {
       setShowReps(false);
@@ -83,9 +69,9 @@ const EditActivity = (props) => {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.name]: e.target.value,
-        ["sets"]: -1,
-        ["reps"]: [],
-        ["weights"]: [],
+        "sets": -1,
+        "reps": [],
+        "weights": [],
       }));
     }
   };
@@ -105,7 +91,7 @@ const EditActivity = (props) => {
     setAmountOfReps(aoReps);
     setFormData((prevState) => ({
       ...prevState,
-      ["reps"]: aoReps.slice(0, formData.sets)
+      "reps": aoReps.slice(0, formData.sets)
     }));
   };
 
@@ -116,7 +102,7 @@ const EditActivity = (props) => {
     setWeightsEachRep(weightsRep);
     setFormData((prevState) => ({
       ...prevState,
-      ["weights"]: weightsRep.slice(0, formData.sets)
+      "weights": weightsRep.slice(0, formData.sets)
     }));
   };
 
@@ -229,11 +215,6 @@ const EditActivity = (props) => {
                     <MenuItem value={9}>9</MenuItem>
                     <MenuItem value={10}>10</MenuItem>
                   </Select>
-                  {errorNumSets && (
-                    <FormHelperText>
-                      Please select number of sets you did
-                    </FormHelperText>
-                  )}
                 </FormControl>
                 {reps}
               </>

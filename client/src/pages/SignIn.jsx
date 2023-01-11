@@ -9,37 +9,21 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../components/Copyright';
-import { Link } from 'react-router-dom';
-import withRouter from '../components/withRouter';
 import PasswordForget from '../components/PasswordForget';
 import { ThemeProvider } from "@mui/material/styles";
 import theme from '../Theme/theme';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login, reset } from '../features/auth/authSlice';
 
 
 function SignIn(props) {
 
-
-    //Generates a new user object
-    const defaultUser = {
-      id: null,
-      email: '',
-      password: '',
-      error: null,
-      auth: null
-    };
-    
-  //Set state of the user
-  // const [user, setUser] = React.useState(defaultUser);
-  //Uses history to programatically change routes
-  // const { location, navigate, params} = props.router;
-
+  // Used to log any error when logging in
   const [loginError, setLoginError] = React.useState('');
 
 
-   // State that contains the data from the form
+   // State that contains the data from the login form
    const [formData, setFormData] = React.useState({
     password: '',
     email: '',
@@ -49,8 +33,7 @@ function SignIn(props) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const {user, isLoading, isError, isSuccess, message} = useSelector((state) => state.auth);
+  const {user, isError, isSuccess, message} = useSelector((state) => state.auth);
 
   React.useEffect(() => {
     if (isError) {
@@ -74,6 +57,7 @@ function SignIn(props) {
     }));
   }
 
+  // If both fields are filled with something, then button will light up
   const isValid = email === '' || password ==='';
 
   const handleSubmit = (event) => {
@@ -170,4 +154,4 @@ function SignIn(props) {
   );
 }
 
-export default withRouter(SignIn);
+export default SignIn;

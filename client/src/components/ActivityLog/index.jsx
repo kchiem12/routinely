@@ -12,16 +12,14 @@ import {
 } from "@mui/material";
 import AddActivity from "./AddActivity";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { auth, db } from "../../Firebase";
 import "./activitylog.css";
 import EditActivity from "./EditActivity";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom";
 import { deleteExercise } from '../../features/exercise/exerciseSlice';
  
 const ActivityLog = (props) => {
   // Destructuring props
-  let { selectedDate, activityChange, setActivityChange, activeDays, setActiveDays } = props;
+  let { selectedDate, activityChange, setActivityChange } = props;
 
   // Use to see if an activity exists (activity log will display "you haven't done anything today")
   const [listOfActivities, setListOfActivities] = useState([]);
@@ -48,7 +46,6 @@ const ActivityLog = (props) => {
   // retrieve and formats data from database
   const retrieveData = (user) => {
     let queryDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-    console.log(selectedDate);
     
     let activitiesonDay = [];
     let corrExercises = [];
@@ -100,21 +97,10 @@ const ActivityLog = (props) => {
   };
 
 
-  // Deletes activity from Firebase Database
-
-  // Gets the exercise data from database
-  const addActivity = (theActivity) => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        retrieveData(user);
-      }
-    })
-  };
-
   useEffect(() => {
     retrieveData();
-    console.log("hello");
   }, [user, exercises, selectedDate, dispatch]);
+
 
   let theActivity = listOfActivities.map((activities, i) => (
     <TableRow key={i}>
@@ -123,7 +109,6 @@ const ActivityLog = (props) => {
         {<EditActivity 
           exercise = {correspondingExercises[i]}
           selectedDate = {selectedDate}
-          addActivity={addActivity}
         />}
         {<DeleteIcon className="icon" onClick={() => dispatch(deleteExercise(correspondingExercises[i]._id))}
         />}
@@ -141,7 +126,6 @@ const ActivityLog = (props) => {
             >{`Activity log for ${selectedDate.month}/${selectedDate.day}`}</TableCell>
             <TableCell colSpan={1} align='center'>
               <AddActivity
-                addActivity={addActivity}
                 selectedDate={selectedDate}
               />
             </TableCell>

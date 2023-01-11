@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import nextId from 'react-id-generator/';
 import { TableCell, TableRow, Table, TableContainer, TableHead, TableBody } from '@mui/material';
 import { DateTime } from 'luxon';
@@ -8,10 +8,11 @@ const CalendarBody = (props) => {
 
     const dt = DateTime.now();
 
-    let {displayMonth, currentMonth, daysInMonth, selectedDate, firstDayOfMonth, setDate, allDaysOfWeek, activeDays, update} = props;
+    let {displayMonth, currentMonth, daysInMonth, selectedDate, firstDayOfMonth, setDate, allDaysOfWeek, activeDays, displayYear} = props;
 
     // Gets the current day
     let currentDay = parseInt(dt.toFormat("dd"));
+    let currentYear = parseInt(dt.toFormat("yyyy"));
 
     let blanks = [];
 
@@ -29,10 +30,10 @@ const CalendarBody = (props) => {
         let isCurrentDay, isSelectedDay, isActive;
 
         // That table cell is the current date
-        if (currentDay === j && currentMonth === displayMonth) isCurrentDay = 'today';
+        if (currentDay === j && currentMonth === displayMonth && currentYear === displayYear) isCurrentDay = 'today';
         
         // This table cell has an activity logged on
-        if (activeDays.includes(`(${displayMonth.toString()}, ${j.toString()})`)) isActive = 'active';
+        if (activeDays.includes(`${displayYear}-${displayMonth}-${j}`)) isActive = 'active';
 
         // This table cell will be the date that the user selected
         if (selectedDate.day === j && displayMonth === selectedDate.month) isSelectedDay = 'selected';

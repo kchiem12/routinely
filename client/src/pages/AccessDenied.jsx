@@ -1,5 +1,5 @@
 import React from 'react';
-import './accessdenied.css';
+import './css/accessdenied.css';
 
 const AccessDenied = () => {
     return ( 

@@ -1,10 +1,8 @@
 import {React, useEffect} from "react";
-import withRouter from "../components/withRouter.js";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Topbar from "../components/Topbar/Topbar";
 import Overview from "../components/Overview";
-import './dashboard.css';
-import {AuthorizedUserCont, withAuthentication} from "../components/Session";
+import './css/dashboard.css';
 import AccessDenied from "./AccessDenied.jsx";
 import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux';
@@ -16,11 +14,10 @@ import {toast} from 'react-toastify';
 
 
 const Dashboard = () => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {user} = useSelector((state) => state.auth);
-  const { exercises, isLoading, isError, message } = useSelector((state) => state.exercise); 
+  const { isError, message } = useSelector((state) => state.exercise); 
 
   useEffect(() => {
 
@@ -33,10 +30,6 @@ const Dashboard = () => {
       dispatch(getExercises());
     }
 
-    // return () => {
-    //   dispatch(reset);
-    // }
-
   }, [user, navigate, isError, message, dispatch]);
 
   return (
@@ -46,7 +39,7 @@ const Dashboard = () => {
       <Topbar />
       <div className="sidemenu-container">
         <Sidebar />
-        <Overview authUser={user}/>
+        <Overview />
       </div>
       <ToastContainer></ToastContainer>
       </>
@@ -55,4 +48,4 @@ const Dashboard = () => {
   );
 };
 
-export default withRouter(withAuthentication(Dashboard));
+export default Dashboard;

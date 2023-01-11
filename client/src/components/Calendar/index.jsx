@@ -3,17 +3,19 @@ import { useState } from 'react';
 import CalendarBody from './calendarbody';
 import CalendarHead from './calendarhead';
 import { DateTime } from 'luxon';
-import { Grid, Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import './calendar.css';
 import { StyledEngineProvider } from '@mui/material';
 import ActivityLog from '../ActivityLog';
-import { auth, db } from '../../Firebase';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 
 const Calendar = (props) => {
 
-    const user = props;
     const dt = DateTime.now();
+
+    const {exercises} = useSelector((state) => state.exercise);
 
     const defaultDay = {
         day: parseInt(dt.toFormat("d")),
@@ -23,41 +25,27 @@ const Calendar = (props) => {
 
     //Hooks
     const[showMonthTable, setShowMonthTable] = useState(false);
-    const [showYearTable, setShowYearTable] = useState(false);
     const [displayMonth, setDisplayMonth] = useState(dt.toFormat("MMMM"));
     const [displayYear, setDisplayYear] = useState(parseInt(dt.toFormat("yyyy")));
     const [selectedDay, setSelectedDay] = useState(defaultDay);
     const [activityChange, setActivityChange] = useState(false);
 
-    // Activedays is a 2D array. arr[i][0] is month, while arr[i][1] is day
+    // Let active days be an array of Strings
     const [activeDays, setActiveDays] = useState([]);
 
     // Keep track of days that are active
      const retrieveActiveDays = () => {
 
-        // Retrieves the data from Firebase, but later want to retrieve it from MongoDB
-        auth.onAuthStateChanged((user) => {
+        var daysActive = [];
 
-            if (user) {
-            let ref = db.ref().child(`users/${user.uid}/activities`);
-            ref.once("value", snapshot => {
-                let data = snapshot.val();
-                const values = Object.values(data);
-    
-                const arr = values.map(obj => {
-                    let split = obj.date.split('-');
-                    let formattedDate = `(${split[0]}, ${split[1]})`;
-                    return formattedDate;
-                });
-                setActiveDays(arr);
-    
-            })
+        for (var i = 0; i < exercises.length; i++) {
+            daysActive.push(exercises[i].date);
         }
-        })
+        setActiveDays(daysActive);
     };
 
     // When an activity is added or deleted, we must update and retrieve from our database to update our website
-    useEffect(() => retrieveActiveDays(), [activityChange]);
+    useEffect(() => retrieveActiveDays(), [exercises]);
 
 
     //Sets the currently selected day by updating the day portion of the JSON
@@ -65,19 +53,17 @@ const Calendar = (props) => {
         setSelectedDay({day, month: convertMonthToNum(displayMonth), year: displayYear});
     }
 
-
     //Toggles the display to choose what month to display
     const toggleMonthDisplay = () => {
         setShowMonthTable(!showMonthTable);
     };
-
 
     //Sets what month is displayed on the calendar
     const setMonth = (month) => {
         setDisplayMonth(month);
         setSelectedDay((prevState) => ({
             ...prevState,
-            ["month"]:  convertMonthToNum(month)
+            "month":  convertMonthToNum(month)
         }));
         toggleMonthDisplay();
     };
@@ -86,7 +72,7 @@ const Calendar = (props) => {
         setDisplayYear(year);
         setSelectedDay((prevState) => ({
             ...prevState,
-            ["year"]: year,
+            "year": year,
         }));
     }
 
@@ -120,21 +106,17 @@ const Calendar = (props) => {
         return allMonths.indexOf(month) + 1;
     };
 
-    const convertYearToNum = (year) => {
-        return parseInt(year);
-    };
-
     //Toggles the month select view
     const toggleMonthSelect = () => setShowMonthTable(!showMonthTable);
 
     // Apparently, both arguments in the DateTime.local() function needs to be integers, so a conversion is necessary
     const daysInMonth = () => {
-        return DateTime.local(convertYearToNum(displayYear), convertMonthToNum(displayMonth)).daysInMonth;
+        return DateTime.local(parseInt(displayYear), convertMonthToNum(displayMonth)).daysInMonth;
     };
 
     // Returns what day of the week the currently selected month begins on
     const firstDayOfMonth = () => {
-        let weekDay = String(DateTime.local(convertYearToNum(displayYear), convertMonthToNum(displayMonth), 1).weekdayLong);
+        let weekDay = String(DateTime.local(parseInt(displayYear), convertMonthToNum(displayMonth), 1).weekdayLong);
         return allDaysOfWeek.indexOf(weekDay);
     };
 
@@ -160,17 +142,15 @@ const Calendar = (props) => {
                                 setDate = {setTheDay}
                                 allDaysOfWeek = {allDaysOfWeek}
                                 activeDays = {activeDays}
+                                displayYear={parseInt(displayYear)}
                             />
                         </Grid>
                         <Grid item className="activity-log-container" style={{ alignSelf: 'center' }} sx={{ width: 7/10 }} >
                             <ActivityLog
                                 selectedDate = {selectedDay}
                                 setSelectedDay = {setSelectedDay}
-                                user = {user}
                                 activityChange = {activityChange}
                                 setActivityChange = {setActivityChange}
-                                activeDays = {activeDays}
-                                setActiveDays = {setActiveDays}
                             />
                         </Grid>
                         <Grid item xs={12} md={12} lg={12}>

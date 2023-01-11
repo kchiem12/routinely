@@ -1,31 +1,16 @@
 import React from "react";
-import { useState } from "react";
-import withRouter from "../components/withRouter.js";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Topbar from "../components/Topbar/Topbar";
-import Overview from "../components/Overview";
-import './dashboard.css';
-import {AuthorizedUserCont, withAuthentication} from "../components/Session";
+import './css/dashboard.css';
 import AccessDenied from "./AccessDenied.jsx";
-import { auth } from "../Firebase.js";
 import { StyledEngineProvider } from "@mui/material";
 import { Grid } from "@mui/material";
 import WorkoutListDisplay from "../components/WorkoutListDisplay/index.jsx";
-
-const user = auth.currentUser;
+import { useSelector } from "react-redux";
 
 const WorkoutList = () => {
 
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      localStorage.setItem('user', true);
-    } else {
-      localStorage.removeItem('user');
-    }
-  })
-
-  const userLocal = JSON.parse(localStorage.getItem('user'));
-  const [filter, setFilter] = useState(null);
+  const { user } = useSelector((state) => state.auth);
 
   let workoutList = [];
 
@@ -40,7 +25,7 @@ const WorkoutList = () => {
   return (
     <>
     {
-      userLocal ? (
+      user ? (
         <>
       <Topbar />
       <div className="sidemenu-container">
@@ -58,4 +43,4 @@ const WorkoutList = () => {
   );
 };
 
-export default withRouter(withAuthentication(WorkoutList));
+export default WorkoutList;

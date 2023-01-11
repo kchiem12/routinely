@@ -10,7 +10,7 @@ const Overview = (props) => {
     return ( 
         <div className="overview">
             <h1 className='calendar-title'>{user && user.firstName}'s Calendar</h1>
-            <Calendar authUser={props.authUser}/>
+            <Calendar />
         </div>
      );
 }
