@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
+console.log(process.env.ATLAS_URI);
+
 // connect to database
 mongoose.connect(process.env.ATLAS_URI)
     .then(() => {
