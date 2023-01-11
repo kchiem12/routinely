@@ -26,6 +26,11 @@ db.once('open', () => console.log("connected to database"));
 app.use(cors());
 app.use(express.json());
 
+const exerciseRouter = require('./routes/exerciseRoutes');
+const userRouter = require('./routes/userRoutes');
+app.use('/api/exercise', exerciseRouter);
+app.use('/api/users', userRouter);
+
 // for production
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/build')));
@@ -33,9 +38,3 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     app.get('/', (req, res) => res.send('In development'));
 }
-
-
-const exerciseRouter = require('./routes/exerciseRoutes');
-const userRouter = require('./routes/userRoutes');
-app.use('/api/exercise', exerciseRouter);
-app.use('/api/users', userRouter);
