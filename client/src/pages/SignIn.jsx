@@ -1,11 +1,9 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../components/Copyright';
@@ -15,6 +13,7 @@ import theme from '../Theme/theme';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, reset } from '../features/auth/authSlice';
+import './css/userforms.css';
 
 
 function SignIn(props) {
@@ -84,9 +83,10 @@ function SignIn(props) {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          
+          <h1 className='logo-title'>
+            Routinely
+          </h1>
 
           <Typography component="h1" variant="h5">
             Sign in

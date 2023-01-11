@@ -31,7 +31,7 @@ const Sidebar = (props) => {
                 </Link>
               </li>
               <li >
-                <Link to={'/dashboard/workoutlist'} className="sidebar-list-item">
+                <Link to={'/dashboard'} className="sidebar-list-item">
                   <FitnessCenterIcon className="sidebar-icons" />
                   Workouts
                 </Link>

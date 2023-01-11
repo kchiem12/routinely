@@ -11,7 +11,7 @@ const Topbar = () => {
         <div className="topbar">
             <div className="bar-wrapper">
                 <div className="top-left">
-                    <span className="title">workout tracker</span>
+                    <span className="title">Routinely</span>
                 </div>
                 <div className="top-right">
                     <div className="topbar-icons">

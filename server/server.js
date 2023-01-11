@@ -32,9 +32,9 @@ app.use('/api/exercise', exerciseRouter);
 app.use('/api/users', userRouter);
 
 // for production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
-    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../', 'client', 'build', 'index.html')));
-} else {
-    app.get('/', (req, res) => res.send('In development'));
-}
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(express.static(path.join(__dirname, '../client/build')));
+//     app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../', 'client', 'build', 'index.html')));
+// } else {
+//     app.get('/', (req, res) => res.send('In development'));
+// }
