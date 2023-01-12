@@ -31,7 +31,7 @@ npm run server
 ```
 
 ## Live Demo
-Set up with Railway [here](routinely.up.railway.app)
+Set up with Railway [here](https://routinely.up.railway.app)
 
 ---
 
