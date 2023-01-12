@@ -4,11 +4,15 @@
 
 Personal project where the goal is to build an application with MERN stack.
 
+&nbsp;
+
 ## About
 Routinely
 : as part of a regular procedure rather than for a special reason.
 
 The goal is to allow users to regularly log their workouts on an interactive calendar. Whether it be lifting or running, users can log it in and be proud of their progress and continue exercising.
+
+&nbsp;
 
 # Installation
 Create a .env file in root directory and add your ATLAS_URI (mongodb connection string), NODE_ENV, PORT, JWT_SECRET
@@ -33,7 +37,10 @@ npm run server
 ## Live Demo
 Set up with Railway [here](https://routinely.up.railway.app)
 
+&nbsp;
+
 ---
+
 
 ## Features
 - Login/SignUp User Authentication
