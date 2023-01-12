@@ -1,23 +1,48 @@
-# Workout Tracker Application
-
-This is a personal project, where the main goal is to create an application that can keep track of your workouts.
-
-To do this, a login/signup feature was implemented, where Firebase was used to handle authentication of the user. 
-For the front-end portion, React.js was used to create an interactive calendar, where the user can select the month and 
-day. By selecting a particular day, the user can see what workouts were logged on that day, if any, and they are also given
-the option to add a workout they have done during that day.
+![Logo](/docs/logo.png)
 
 ---
 
-There is also a Workouts tab on the sidebar, which is used for the user's convenience to look at various workouts to see which ones
-they should do or try out. Currently, this page is a work-in-progress.
+Personal project where the goal is to build an application with MERN stack.
 
-**The app is functional, however there are a list of things that still needs to be done:**
-1. Finish the workouts list tab
-2. Allow users to customize their dashboard and account settings
-3. Add a chart to graph their activity
-4. Make it beautiful
-5. Eventually transfer the backend over to MongoDB
+## About
+Routinely
+: as part of a regular procedure rather than for a special reason.
 
+The goal is to allow users to regularly log their workouts on an interactive calendar. Whether it be lifting or running, users can log it in and be proud of their progress and continue exercising.
 
-This application is built using React.js and Firebase.
+# Installation
+Create a .env file in root directory and add your ATLAS_URI (mongodb connection string), NODE_ENV, PORT, JWT_SECRET
+
+### Install Dependencies
+```
+/*  server dependencies */
+npm install
+
+/* client dependencies */
+cd client
+npm install
+npm run build // make build folder
+cd ../
+```
+### Run Server
+```
+// runs application on localhost
+npm run server 
+```
+
+## Live Demo
+Set up with Railway [here](routinely.up.railway.app)
+
+---
+
+## Features
+- Login/SignUp User Authentication
+- Interactive calendar that shows days where users have logged exercises, and allows users to select any day to log an exercise
+- CRUD operations: website gets users' exercise, and allows them to create, update, and delete them
+- In future: add workouts list for users to browse, and allow users to customize their dashboard/profile
+
+The backend was done with **NodeJS/Express**, with **MongoDB** as database. The frontend was done with **React and Redux**.
+
+# Screenshots
+![Dashboard](/docs/dashboard.png)
+![SignIn](/docs/signin.png)

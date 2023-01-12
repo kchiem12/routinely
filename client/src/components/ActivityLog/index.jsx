@@ -133,10 +133,10 @@ const ActivityLog = (props) => {
           <TableRow>
             {listOfActivities.length !== 0 ? (
               <>
-                <TableCell>name</TableCell>
-                <TableCell>type</TableCell>
-                <TableCell>amount/duration</TableCell>
-                <TableCell>edit/delete</TableCell>
+                <TableCell align="center" sx={{fontWeight: 'bold'}}>name</TableCell>
+                <TableCell align="center" sx={{fontWeight: 'bold'}}>type</TableCell>
+                <TableCell align="center" sx={{fontWeight: 'bold'}}>amount/duration</TableCell>
+                <TableCell align="center" sx={{fontWeight: 'bold'}}>edit/delete</TableCell>
               </>
             ) : (
               <TableCell colSpan={8} align="center">
